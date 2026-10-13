@@ -4,6 +4,7 @@
 #include "../common/hud_reveal_logic.h"
 #include "../common/weapon_hand_logic.h"
 #include "../common/weapon_interaction_logic.h"
+#include "../common/realistic_reload_logic.h"
 #include "../common/weapon_model_observation.h"
 #include "../common/weapon_reload_target.h"
 #include "weapon_accessory_renderer.h"
@@ -173,6 +174,51 @@ namespace
             return Game_VrActionTransport(action,now);
         return weapon_interaction::Button(action==vr_mapping::Reload?
             g_config.weapon_reload_button[index]:g_config.weapon_switch_button[index]);
+    }
+    // Raw VR control that currently drives a named action, matching input.cpp:
+    // semantic mappings resolve the per-title VR binding; the legacy path maps
+    // VR A/B/X/Y straight to the same Xbox letters.
+    int VrSourceForAction(GameTitle title,vr_mapping::Action action)
+    {
+        const int index=weapon_interaction::TitleIndex(title);
+        if(index<0) return vr_mapping::Unbound;
+        if(g_config.vr_action_mapping)
+            return vr_mapping::Resolve(action,g_config.vr_bindings[index][action]);
+        if(action==vr_mapping::Fire) return vr_mapping::PrimaryTrigger;
+        if(action!=vr_mapping::Reload) return vr_mapping::Unbound;
+        switch(g_config.weapon_reload_button[index])
+        {
+        case 0:return vr_mapping::X;
+        case 3:return vr_mapping::B;
+        case 4:return vr_mapping::Y;
+        case 5:return vr_mapping::A;
+        default:return vr_mapping::Unbound; // bumpers/triggers also aim, melee and fire
+        }
+    }
+    // Only face buttons and stick clicks can be held back for the step-by-step
+    // reload; withholding a grip or trigger would also take aim or melee away.
+    bool* PadButtonForSource(VrPadState& pad,int source)
+    {
+        switch(source)
+        {
+        case vr_mapping::A:return &pad.a;
+        case vr_mapping::B:return &pad.b;
+        case vr_mapping::X:return &pad.x;
+        case vr_mapping::Y:return &pad.y;
+        case vr_mapping::LeftClick:return &pad.clickL;
+        case vr_mapping::RightClick:return &pad.clickR;
+        default:return nullptr;
+        }
+    }
+    void WithholdVrSource(VrPadState& pad,int source)
+    {
+        if(bool* button=PadButtonForSource(pad,source)) {*button=false;return;}
+        switch(source)
+        {
+        case vr_mapping::PrimaryTrigger:pad.trigR=0;break;
+        case vr_mapping::SupportTrigger:pad.trigL=0;break;
+        default:break; // grips and gesture D-pad directions are never withheld
+        }
     }
     bool g_touchProProfileEnabled = false;
     // The headset's real panel rate, read once from the runtime (0 = the runtime
@@ -9839,6 +9885,12 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
     weapon_interaction::ReloadTargets g_reloadTargets;
     WeaponAccessoryRenderer g_weaponAccessoryRenderer;
     weapon_accessory::Presentation g_weaponAccessory; // compositor thread only
+    // Step-by-step reload: its own state, parts lying on the floor, and their
+    // presentations. Same thread and freshness rules as g_weaponAccessory.
+    realistic_reload::State g_realisticReload;
+    realistic_reload::DropPool g_reloadDrops;
+    weapon_accessory::Presentation g_reloadDropAccessories[realistic_reload::DropPool::kCapacity];
+    std::atomic<unsigned> g_realisticEjects{0},g_realisticInserts{0},g_realisticFinishes{0},g_realisticCancels{0};
     std::atomic<HRESULT> g_weaponAccessoryResult{S_FALSE};
     std::atomic<unsigned> g_weaponGestureGrabs{0},g_weaponReloadRequests{0},g_weaponSwapRequests{0};
     std::atomic<unsigned> g_authoredInsertionRequests{0},g_fallbackInsertionRequests{0};
@@ -13875,7 +13927,8 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
         if(f1Chord) pad.clickL=pad.clickR=true;
         const float rawSupportGrip=pad.gripL;
         weapon_interaction::Output weaponGesture{};
-        if(g_config.manual_reload || g_config.weapon_holsters || g_weaponInteraction.HasClaimedGrip())
+        if(g_config.manual_reload || g_config.weapon_holsters || g_weaponInteraction.HasClaimedGrip() ||
+            g_realisticReload.HasClaimedGrip())
         {
             // Use the same predicted-time head and controller space. This
             // optional extra locate does not change the late camera sample.
@@ -13928,10 +13981,70 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
             const int index=weapon_interaction::TitleIndex(sample.title);
             settings.reloadButton=WeaponGestureBinding(sample.title,vr_mapping::Reload,inputNow);
             settings.swapButton=WeaponGestureBinding(sample.title,vr_mapping::SwitchWeapon,inputNow);
-            weaponGesture=g_weaponInteraction.Update(sample,settings);
+            // Step-by-step reload owns the pouch/insert gesture when enabled. The
+            // accepted gesture state keeps holsters; its own instant pouch
+            // reload and needle shake stay off so one press cannot reload twice.
+            const bool realistic=g_config.manual_reload&&g_config.manual_reload_realistic;
+            weapon_interaction::Settings gestureSettings=settings;
+            if(realistic) gestureSettings.reload=false;
+            weaponGesture=g_weaponInteraction.Update(sample,gestureSettings);
             const auto& supportQ=leftLocation.pose.orientation;
-            g_weaponAccessory=weapon_accessory::Build(sample,settings,weaponGesture,
-                {supportQ.x,supportQ.y,supportQ.z,supportQ.w});
+            const weapon_interaction::Quat supportRotation{supportQ.x,supportQ.y,supportQ.z,supportQ.w};
+            realistic_reload::Output stepReload{};
+            if(realistic||g_realisticReload.HasClaimedGrip())
+            {
+                const int reloadSource=VrSourceForAction(sample.title,vr_mapping::Reload);
+                const bool* reloadControl=PadButtonForSource(pad,reloadSource);
+                realistic_reload::Sample stepSample{};
+                stepSample.base=sample;
+                stepSample.reloadSourceSupported=reloadControl!=nullptr;
+                stepSample.reloadSourceHeld=reloadControl&&*reloadControl;
+                realistic_reload::Settings stepSettings{};
+                stepSettings.enabled=realistic;
+                stepSettings.finishStep=g_config.manual_reload_finish_step;
+                stepSettings.blockFire=g_config.manual_reload_block_fire;
+                stepSettings.finishRadius=g_config.weapon_finish_radius_m;
+                stepSettings.finishTravel=g_config.weapon_finish_travel_m;
+                stepReload=g_realisticReload.Update(stepSample,settings,stepSettings);
+                // Hold back the Reload press (a tap ejects; a long hold is passed
+                // on as Halo's own Reload/Use) and the trigger while the part is out.
+                if(stepReload.withholdReload) WithholdVrSource(pad,reloadSource);
+                if(stepReload.blockFire) WithholdVrSource(pad,VrSourceForAction(sample.title,vr_mapping::Fire));
+                weaponGesture.consumeSupport|=stepReload.consumeSupport;
+                weaponGesture.releaseTwoHand|=stepReload.releaseTwoHand;
+                weaponGesture.buttons|=stepReload.buttons;
+                weaponGesture.pulseUntil=(std::max)(weaponGesture.pulseUntil,stepReload.pulseUntil);
+                weaponGesture.primaryHaptic=(std::max)(weaponGesture.primaryHaptic,stepReload.primaryHaptic);
+                weaponGesture.supportHaptic=(std::max)(weaponGesture.supportHaptic,stepReload.supportHaptic);
+                weaponGesture.reloadRequested|=stepReload.reloadRequested;
+                weaponGesture.pickedMagazine|=stepReload.picked;
+                weaponGesture.holdingMagazine|=stepReload.holding;
+                const auto* ejected=realistic_reload::EjectModel(sample.title,sample.weaponGraph,stepReload.part);
+                if(stepReload.ejected)
+                    g_reloadDrops.Spawn(ejected,stepReload.ejectAt,stepReload.ejectRotation,sample.head,
+                        g_config.weapon_drop_floor_m,inputNow);
+                if(stepReload.droppedHeld&&weapon_interaction::Normal(supportRotation))
+                    g_reloadDrops.Spawn(ejected,weapon_interaction::HeldMagazineCenter(sample,supportRotation),
+                        supportRotation,sample.head,g_config.weapon_drop_floor_m,inputNow);
+                if(stepReload.ejected) g_realisticEjects.fetch_add(1,std::memory_order_relaxed);
+                if(stepReload.inserted) g_realisticInserts.fetch_add(1,std::memory_order_relaxed);
+                if(stepReload.finished) g_realisticFinishes.fetch_add(1,std::memory_order_relaxed);
+                if(stepReload.cancelled) g_realisticCancels.fetch_add(1,std::memory_order_relaxed);
+            }
+            g_reloadDrops.Step(inputNow,g_config.weapon_drop_linger_s);
+            if(realistic)
+            {
+                g_weaponAccessory=realistic_reload::BuildPresentation(sample,settings,g_realisticReload,
+                    stepReload,supportRotation);
+                for(unsigned i=0;i<realistic_reload::DropPool::kCapacity;++i)
+                    g_reloadDropAccessories[i]=realistic_reload::DroppedPresentation(g_reloadDrops.Item(i),sample);
+            }
+            else
+            {
+                g_weaponAccessory=weapon_accessory::Build(sample,settings,weaponGesture,supportRotation);
+                for(auto& dropped:g_reloadDropAccessories) dropped={};
+                g_reloadDrops.Reset();
+            }
             pad.weaponButtons=weaponGesture.buttons;
             pad.weaponSampleMs=inputNow;pad.weaponPulseUntilMs=weaponGesture.pulseUntil;
             pad.weaponTitle=sample.title;pad.weaponGeneration=sample.generation;
@@ -13963,7 +14076,10 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
         else
         {
             g_weaponInteraction.Reset();
+            g_realisticReload.Reset();
+            g_reloadDrops.Reset();
             g_weaponAccessory={};
+            for(auto& dropped:g_reloadDropAccessories) dropped={};
             g_weaponGestureReadyMs.store(0,std::memory_order_release);
         }
         g_scopeZoomStickY.store(pad.valid?pad.turnY:0.0f,
@@ -16781,31 +16897,43 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                                     const GameTitle title=TitleAdapter_GetActiveTitle();
                                     const uint32_t generation=TitleAdapter_GetGeneration(title);
                                     const uint64_t space=g_contactSpaceEpoch.load(std::memory_order_acquire);
-                                    if(eyeUploaded && targetEye<projectionViews.size() &&
-                                        weapon_accessory::Current(g_weaponAccessory,title,generation,space,
-                                            VR_GetWeaponModelIdentity(title,generation,space,now),now,
-                                            g_config.manual_reload,
-                                            g_sessionState==XR_SESSION_STATE_FOCUSED &&
-                                            TitleAdapter_GetRuntimeMode()==RuntimeMode::Gameplay &&
-                                            !Menu_IsOpen()&&!VR_IsPausePresentation()&&
-                                            !VR_IsPausePresentationTarget()&&!SecondaryWeaponPresentationActive()))
+                                    const uint64_t heldIdentity=VR_GetWeaponModelIdentity(title,generation,space,now);
+                                    const bool accessoryGameplay=g_sessionState==XR_SESSION_STATE_FOCUSED &&
+                                        TitleAdapter_GetRuntimeMode()==RuntimeMode::Gameplay &&
+                                        !Menu_IsOpen()&&!VR_IsPausePresentation()&&
+                                        !VR_IsPausePresentationTarget()&&!SecondaryWeaponPresentationActive();
+                                    if(g_weaponAccessory.model==&weapon_model::kGenericReloadModel &&
+                                        !g_config.weapon_unknown_reload_visual) g_weaponAccessory={};
+                                    // Reserve/held part first, then step-by-step reload parts on the floor.
+                                    const weapon_accessory::Presentation* accessoryItems[WeaponAccessoryRenderer::kMaxItems]{};
+                                    unsigned accessoryCount=0;
+                                    if(weapon_accessory::Current(g_weaponAccessory,title,generation,space,
+                                        heldIdentity,now,g_config.manual_reload,accessoryGameplay))
+                                        accessoryItems[accessoryCount++]=&g_weaponAccessory;
+                                    for(const auto& dropped:g_reloadDropAccessories)
+                                        if(accessoryCount<WeaponAccessoryRenderer::kMaxItems&&
+                                            weapon_accessory::Current(dropped,title,generation,space,heldIdentity,now,
+                                                g_config.manual_reload&&g_config.manual_reload_realistic,accessoryGameplay))
+                                            accessoryItems[accessoryCount++]=&dropped;
+                                    if(eyeUploaded && targetEye<projectionViews.size() && accessoryCount)
                                     {
-                                        if(g_weaponAccessory.model==&weapon_model::kGenericReloadModel &&
-                                            !g_config.weapon_unknown_reload_visual) g_weaponAccessory={};
                                         const auto& view=projectionViews[targetEye];
                                         const auto& p=view.pose.position;const auto& q=view.pose.orientation;
-                                        weapon_accessory::Constants constants{};
-                                        if(weapon_accessory::Projection(g_weaponAccessory,
-                                            {{p.x,p.y,p.z},{q.x,q.y,q.z,q.w}},view.fov.angleLeft,
-                                            view.fov.angleRight,view.fov.angleDown,view.fov.angleUp,constants))
+                                        weapon_accessory::Constants constants[WeaponAccessoryRenderer::kMaxItems]{};
+                                        bool projected=true;
+                                        for(unsigned item=0;item<accessoryCount&&projected;++item)
+                                            projected=weapon_accessory::Projection(*accessoryItems[item],
+                                                {{p.x,p.y,p.z},{q.x,q.y,q.z,q.w}},view.fov.angleLeft,
+                                                view.fov.angleRight,view.fov.angleDown,view.fov.angleUp,constants[item]);
+                                        if(projected)
                                         {
                                             const auto& rect=view.subImage.imageRect;
                                             const D3D11_VIEWPORT viewport{static_cast<float>(rect.offset.x),
                                                 static_cast<float>(rect.offset.y),static_cast<float>(rect.extent.width),
                                                 static_cast<float>(rect.extent.height),0,1};
-                                            const HRESULT accessoryResult=g_weaponAccessoryRenderer.Draw(
+                                            const HRESULT accessoryResult=g_weaponAccessoryRenderer.DrawMany(
                                                 g_device,g_context,targetRtv,g_stereoW,g_stereoH,viewport,
-                                                g_weaponAccessory,constants,&accessoryCommands[targetEye]);
+                                                accessoryItems,constants,accessoryCount,&accessoryCommands[targetEye]);
                                             if(!FAILED(accessoryPairResult)) accessoryPairResult=accessoryResult;
                                         }
                                     }
@@ -22258,6 +22386,32 @@ void VR_ReportWeaponInteractions(uint64_t nowMs)
             g_config.weapon_holster_slide?1u:0u,g_config.weapon_holster_click?1u:0u,
             g_config.weapon_body_zone_radius_m,g_config.weapon_insert_radius_m,
             g_config.weapon_holster_radius_m,g_config.weapon_holster_draw_m,g_config.weapon_needler_shake?1u:0u);
+    {
+        static unsigned previousEjects=0,previousFinishes=0,previousCancels=0;
+        static bool previousRealistic=false;
+        const bool realistic=g_config.manual_reload&&g_config.manual_reload_realistic;
+        const unsigned ejects=g_realisticEjects.load(std::memory_order_relaxed);
+        const unsigned finishes=g_realisticFinishes.load(std::memory_order_relaxed);
+        const unsigned cancels=g_realisticCancels.load(std::memory_order_relaxed);
+        if((realistic||previousRealistic)&&(changed||realistic!=previousRealistic||ejects!=previousEjects||
+            finishes!=previousFinishes||cancels!=previousCancels))
+        {
+            const int source=VrSourceForAction(title,vr_mapping::Reload);
+            VrPadState probe{};
+            const auto recipe=realistic_reload::Lookup(title,weapon_model::Find(title,modelIdentity));
+            LOG("Step-by-step reload: enabled=%u title=%s weapon=%s part=%u finish=%u reloadSource=%s%s "
+                "ejects=%u inserts=%u finishes=%u cancels=%u finishStep=%u blockFire=%u "
+                "(requests only; native ammo/inventory determine outcome)",
+                realistic?1u:0u,index>=0?weapon_interaction::kTitleNames[index]:"none",
+                weapon_model::Find(title,modelIdentity)?weapon_model::Find(title,modelIdentity)->name:"unfamiliar/none",
+                static_cast<unsigned>(recipe.part),static_cast<unsigned>(recipe.finish),
+                source>=0&&source<vr_mapping::SourceCount?vr_mapping::kSourceNames[source]:"unbound",
+                PadButtonForSource(probe,source)?"":" UNSUPPORTED (bumper/trigger/gesture source): stock reload",
+                ejects,g_realisticInserts.load(std::memory_order_relaxed),finishes,cancels,
+                g_config.manual_reload_finish_step?1u:0u,g_config.manual_reload_block_fire?1u:0u);
+        }
+        previousRealistic=realistic;previousEjects=ejects;previousFinishes=finishes;previousCancels=cancels;
+    }
     previousOptions=options;previousTitle=title;previousBindings=bindings;previousReady=ready;
     previousGrabs=grabs;previousReloads=reloads;previousSwaps=swaps;lastReport=nowMs;
 }

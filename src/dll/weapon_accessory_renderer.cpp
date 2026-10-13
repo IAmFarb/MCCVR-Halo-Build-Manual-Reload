@@ -104,24 +104,35 @@ HRESULT WeaponAccessoryRenderer::Prepare(ID3D11Device* device,unsigned width,uns
     }
     return S_OK;
 }
+namespace
+{
+bool Drawable(const weapon_model::Model* model) noexcept
+{
+    const bool generic=weapon_model::UsesTokenGeometry(model);
+    const size_t available=generic?std::size(weapon_model::kGenericVertices):std::size(weapon_model::kVertices);
+    return model&&model->vertexCount&&model->firstVertex<=available&&
+        model->vertexCount<=available-model->firstVertex&&model->vertexCount%3==0;
+}
+}
 HRESULT WeaponAccessoryRenderer::Draw(ID3D11Device* device,ID3D11DeviceContext* immediate,
     ID3D11RenderTargetView* target,unsigned width,unsigned height,const D3D11_VIEWPORT& viewport,
     const weapon_accessory::Presentation& item,const weapon_accessory::Constants& constants,ID3D11CommandList** staged)
 {
+    const weapon_accessory::Presentation* items[]{&item};
+    return DrawMany(device,immediate,target,width,height,viewport,items,&constants,1,staged);
+}
+HRESULT WeaponAccessoryRenderer::DrawMany(ID3D11Device* device,ID3D11DeviceContext* immediate,
+    ID3D11RenderTargetView* target,unsigned width,unsigned height,const D3D11_VIEWPORT& viewport,
+    const weapon_accessory::Presentation* const* items,const weapon_accessory::Constants* constants,
+    unsigned count,ID3D11CommandList** staged)
+{
     if(staged) *staged=nullptr;
-    const auto* model=item.model;
-    const bool generic=weapon_model::UsesTokenGeometry(model);
-    const size_t available=generic?std::size(weapon_model::kGenericVertices):std::size(weapon_model::kVertices);
-    if(!immediate||!target||!model||!model->vertexCount||
-        model->firstVertex>available||
-        model->vertexCount>available-model->firstVertex||
-        model->vertexCount%3) return E_INVALIDARG;
+    if(!immediate||!target||!items||!constants||!count||count>kMaxItems) return E_INVALIDARG;
+    unsigned drawable=0;
+    for(unsigned i=0;i<count;++i) drawable+=items[i]&&Drawable(items[i]->model)?1u:0u;
+    if(!drawable) return E_INVALIDARG;
     HRESULT hr=Prepare(device,width,height);
     if(FAILED(hr)) return hr;
-    D3D11_MAPPED_SUBRESOURCE mapped{};
-    hr=context_->Map(constants_.Get(),0,D3D11_MAP_WRITE_DISCARD,0,&mapped);
-    if(FAILED(hr)) return hr;
-    std::memcpy(mapped.pData,&constants,sizeof(constants));context_->Unmap(constants_.Get(),0);
     context_->OMSetRenderTargets(1,&target,depth_.Get());
     context_->ClearDepthStencilView(depth_.Get(),D3D11_CLEAR_DEPTH,1,0);
     context_->OMSetDepthStencilState(depthState_.Get(),0);
@@ -130,14 +141,26 @@ HRESULT WeaponAccessoryRenderer::Draw(ID3D11Device* device,ID3D11DeviceContext* 
     context_->IASetInputLayout(layout_.Get());
     context_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     const UINT stride=sizeof(weapon_model::Vertex),offset=0;
-    ID3D11Buffer* vertex=generic?genericVertices_.Get():vertices_.Get();ID3D11Buffer* cb=constants_.Get();
-    context_->IASetVertexBuffers(0,1,&vertex,&stride,&offset);
+    ID3D11Buffer* cb=constants_.Get();
     context_->VSSetConstantBuffers(0,1,&cb);
     context_->PSSetConstantBuffers(0,1,&cb);
     ID3D11ShaderResourceView* surface=surface_.Get();ID3D11SamplerState* sampler=sampler_.Get();
     context_->PSSetShaderResources(0,1,&surface);context_->PSSetSamplers(0,1,&sampler);
     context_->VSSetShader(vs_.Get(),nullptr,0);context_->PSSetShader(ps_.Get(),nullptr,0);
-    context_->Draw(model->vertexCount,model->firstVertex);
+    for(unsigned i=0;i<count&&SUCCEEDED(hr);++i)
+    {
+        const auto* model=items[i]?items[i]->model:nullptr;
+        if(!Drawable(model)) continue;
+        // A deferred context records each discarded map as its own version.
+        D3D11_MAPPED_SUBRESOURCE mapped{};
+        hr=context_->Map(constants_.Get(),0,D3D11_MAP_WRITE_DISCARD,0,&mapped);
+        if(FAILED(hr)) break;
+        std::memcpy(mapped.pData,&constants[i],sizeof(constants[i]));context_->Unmap(constants_.Get(),0);
+        ID3D11Buffer* vertex=weapon_model::UsesTokenGeometry(model)?genericVertices_.Get():vertices_.Get();
+        context_->IASetVertexBuffers(0,1,&vertex,&stride,&offset);
+        context_->Draw(model->vertexCount,model->firstVertex);
+    }
+    if(FAILED(hr)) { context_->ClearState();return hr; }
     Ptr<ID3D11CommandList> commands;
     hr=context_->FinishCommandList(FALSE,&commands);
     if(SUCCEEDED(hr))

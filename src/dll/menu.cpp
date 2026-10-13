@@ -1187,9 +1187,34 @@ namespace
         changed |= ImGui::Checkbox("Manual Reload", &g_config.manual_reload);
         if (g_config.manual_reload)
         {
-            ImGui::TextDisabled("Hold your support grip at your hip to take a magazine.\n"
-                "Bring it below your weapon hand, then release to reload.\n"
-                "Native ammo and reserve limits still apply.");
+            changed |= ImGui::Checkbox("Step-by-step reload (eject, hip, insert, rack)", &g_config.manual_reload_realistic);
+            if(g_config.manual_reload_realistic)
+            {
+                ImGui::TextDisabled("Tap Reload: the magazine drops out. Take a new one from your hip\n"
+                    "with your support grip and push it in where the old one was.\n"
+                    "Then pull the charging handle or slide back, pump a shotgun,\n"
+                    "or push a rocket bar / cover closed. Shotguns load shell by shell.\n"
+                    "Hold Reload for pick up / Halo's own reload. Plasma weapons are unchanged.");
+                changed |= ImGui::Checkbox("Require handle / slide / pump step", &g_config.manual_reload_finish_step);
+                changed |= ImGui::Checkbox("Trigger does nothing while the magazine is out", &g_config.manual_reload_block_fire);
+                if(g_config.manual_reload_finish_step)
+                {
+                    changed |= vr_menu::SliderFloat("Handle / pump grab size (m)",
+                        &g_config.weapon_finish_radius_m,0.06f,0.25f,"%.2f");
+                    changed |= vr_menu::SliderFloat("Handle / pump pull distance (m)",
+                        &g_config.weapon_finish_travel_m,0.03f,0.15f,"%.2f");
+                }
+                changed |= vr_menu::SliderFloat("Dropped magazine floor below head (m)",
+                    &g_config.weapon_drop_floor_m,0.80f,2.40f,"%.2f");
+                changed |= vr_menu::SliderFloat("Dropped magazine stays for (s)",
+                    &g_config.weapon_drop_linger_s,0.5f,15.0f,"%.1f");
+                ImGui::TextDisabled("Automatic reload is off and Halo's own reload animation is skipped\n"
+                    "while this is on. Native ammo and reserve limits still apply.");
+            }
+            else
+                ImGui::TextDisabled("Hold your support grip at your hip to take a magazine.\n"
+                    "Bring it below your weapon hand, then release to reload.\n"
+                    "Native ammo and reserve limits still apply.");
             changed |= ImGui::Checkbox("Disable automatic reload", &g_config.manual_reload_disable_auto);
             changed |= ImGui::Checkbox("Skip reload and weapon-ready animations", &g_config.manual_reload_skip_animations);
             changed |= ImGui::Checkbox("Shortened reload animation", &g_config.manual_reload_shortened_animation);
@@ -1216,7 +1241,9 @@ namespace
             ImGui::TextDisabled("Detected unfamiliar weapons use a blue reload item.\n"
                 "Native ammo and reload rules still apply; it is not the mod's own mesh.");
             changed |= ImGui::Checkbox("Shake to reload needle weapons", &g_config.weapon_needler_shake);
-            if(g_config.weapon_needler_shake)
+            if(g_config.weapon_needler_shake&&g_config.manual_reload_realistic)
+                ImGui::TextDisabled("Inactive during step-by-step reload: Needlers use a crystal from the hip.");
+            else if(g_config.weapon_needler_shake)
             {
                 changed |= vr_menu::SliderFloat("Minimum shake stroke (m)",
                     &g_config.weapon_shake_travel_m,0.06f,0.20f,"%.2f");

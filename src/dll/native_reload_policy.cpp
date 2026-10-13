@@ -270,8 +270,12 @@ void NativeReloadPolicy_Poll()
             if (!Retire(i)) { if(now>=r.reportAt) {r.reportAt=now+2000;LOG("Native reload policy: title %u cleanup pending; stock feature admission",i);} continue; }
         }
         if (active!=title || !generation) continue;
-        const unsigned requested=native_reload::Options(g_config.manual_reload,g_config.manual_reload_disable_auto,
-            g_config.manual_reload_skip_animations,g_config.manual_reload_shortened_animation);
+        // The step-by-step reload is the player's whole reload: Halo must not
+        // start one on an empty trigger, nor replay its own animation after it.
+        const bool realistic=g_config.manual_reload&&g_config.manual_reload_realistic;
+        const unsigned requested=native_reload::Options(g_config.manual_reload,
+            g_config.manual_reload_disable_auto||realistic,
+            g_config.manual_reload_skip_animations||realistic,g_config.manual_reload_shortened_animation);
         if (!r.attempted && requested) {
             const auto* descriptor=TitleRegistry_Find(title);
             if (!descriptor || !GetModuleHandleExW(0,descriptor->moduleName,&r.module)) continue;

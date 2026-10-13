@@ -867,6 +867,16 @@ struct Config
     bool manual_reload_disable_auto = false;
     bool manual_reload_skip_animations = false;
     bool manual_reload_shortened_animation = false;
+    // Step-by-step (Titanfall-style) reload beneath Manual Reload: Reload
+    // ejects, hip part, insert, then the weapon's handle/slide/pump/cover.
+    // Implies disable-auto and skip-animation where those hooks install.
+    bool manual_reload_realistic = false;
+    bool manual_reload_finish_step = true;
+    bool manual_reload_block_fire = true;
+    float weapon_finish_radius_m = 0.12f;
+    float weapon_finish_travel_m = 0.06f;
+    float weapon_drop_floor_m = 1.70f;   // assumed floor distance below the head
+    float weapon_drop_linger_s = 4.0f;   // seconds an ejected part stays on the floor
     bool weapon_holsters = false;
     float weapon_pouch_down_m = 0.50f;
     int weapon_pouch_location = 0; // 0 support-side front hip, 1 behind support shoulder

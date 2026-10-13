@@ -1179,6 +1179,25 @@ void ConfigLoad(const wchar_t* path)
         if (!strcmp(key,"manual_reload_disable_auto")) { g_config.manual_reload_disable_auto=atoi(val)!=0;continue; }
         if (!strcmp(key,"manual_reload_skip_animations")) { g_config.manual_reload_skip_animations=atoi(val)!=0;continue; }
         if (!strcmp(key,"manual_reload_shortened_animation")) { g_config.manual_reload_shortened_animation=atoi(val)!=0;continue; }
+        if (!strcmp(key,"manual_reload_realistic")) { g_config.manual_reload_realistic=atoi(val)!=0;continue; }
+        if (!strcmp(key,"manual_reload_finish_step")) { g_config.manual_reload_finish_step=atoi(val)!=0;continue; }
+        if (!strcmp(key,"manual_reload_block_fire")) { g_config.manual_reload_block_fire=atoi(val)!=0;continue; }
+        {
+            struct RealisticRange { const char* key; float* value; float low,high; };
+            const RealisticRange ranges[]{
+                {"weapon_finish_radius_m",&g_config.weapon_finish_radius_m,0.06f,0.25f},
+                {"weapon_finish_travel_m",&g_config.weapon_finish_travel_m,0.03f,0.15f},
+                {"weapon_drop_floor_m",&g_config.weapon_drop_floor_m,0.80f,2.40f},
+                {"weapon_drop_linger_s",&g_config.weapon_drop_linger_s,0.50f,15.0f}};
+            bool matched=false;
+            for(const auto& range:ranges) if(!strcmp(key,range.key))
+            {
+                ParseFloatSetting(key,val,*range.value);
+                *range.value=std::clamp(*range.value,range.low,range.high);
+                matched=true;break;
+            }
+            if(matched) continue;
+        }
         if (!strcmp(key,"weapon_holsters")) { g_config.weapon_holsters=atoi(val)!=0;continue; }
         if (!strcmp(key,"weapon_holster_slide")) { g_config.weapon_holster_slide=atoi(val)!=0;continue; }
         if (!strcmp(key,"weapon_holster_click")) { g_config.weapon_holster_click=atoi(val)!=0;continue; }
@@ -2457,6 +2476,16 @@ void ConfigSave()
         g_config.manual_reload_disable_auto?1:0,g_config.manual_reload_skip_animations?1:0);
     fprintf(f, "# Shortened reload retains the native chambering tail; full animation skip takes precedence.\n");
     fprintf(f, "manual_reload_shortened_animation = %d\n",g_config.manual_reload_shortened_animation?1:0);
+    fprintf(f, "# Step-by-step reload (requires manual_reload): tap Reload to eject, take the part from the\n");
+    fprintf(f, "# hip, insert it, then pull the handle/slide/pump or push the cover. Hold Reload for native use.\n");
+    fprintf(f, "# Implies disabled automatic reload and skipped native reload animation where available.\n");
+    fprintf(f, "manual_reload_realistic = %d\nmanual_reload_finish_step = %d\nmanual_reload_block_fire = %d\n",
+        g_config.manual_reload_realistic?1:0,g_config.manual_reload_finish_step?1:0,g_config.manual_reload_block_fire?1:0);
+    fprintf(f, "weapon_finish_radius_m = %.3f\nweapon_finish_travel_m = %.3f\n",
+        g_config.weapon_finish_radius_m,g_config.weapon_finish_travel_m);
+    fprintf(f, "# Ejected parts fall to this distance below your head, then vanish after the linger time.\n");
+    fprintf(f, "weapon_drop_floor_m = %.3f\nweapon_drop_linger_s = %.2f\n",
+        g_config.weapon_drop_floor_m,g_config.weapon_drop_linger_s);
     fprintf(f, "weapon_pouch_down_m = %.3f\nweapon_body_zone_radius_m = %.3f\n",
         g_config.weapon_pouch_down_m,g_config.weapon_body_zone_radius_m);
     fprintf(f, "# Holster location: 0 = weapon-side shoulder, 1 = weapon-side hip.\n");
