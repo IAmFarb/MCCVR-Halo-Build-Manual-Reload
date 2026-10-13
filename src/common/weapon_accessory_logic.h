@@ -79,6 +79,8 @@ inline bool Projection(const Presentation& p,const Pose& eye,
     { out.color[0]=.95f;out.color[1]=.38f;out.color[2]=.06f; }
     if(p.model==&weapon_model::kShellReloadModel)
     { out.color[0]=.75f;out.color[1]=.12f;out.color[2]=.08f; }
+    if(p.model==&weapon_model::kGrenadeTokenModel)
+    { out.color[0]=.22f;out.color[1]=.32f;out.color[2]=.14f; }
     return true;
 }
 }

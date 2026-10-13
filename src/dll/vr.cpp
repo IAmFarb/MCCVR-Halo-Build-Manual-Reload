@@ -5,6 +5,7 @@
 #include "../common/weapon_hand_logic.h"
 #include "../common/weapon_interaction_logic.h"
 #include "../common/realistic_reload_logic.h"
+#include "../common/grenade_gesture_logic.h"
 #include "../common/weapon_model_observation.h"
 #include "../common/weapon_reload_target.h"
 #include "weapon_accessory_renderer.h"
@@ -174,6 +175,16 @@ namespace
             return Game_VrActionTransport(action,now);
         return weapon_interaction::Button(action==vr_mapping::Reload?
             g_config.weapon_reload_button[index]:g_config.weapon_switch_button[index]);
+    }
+    // Chest grenades: semantic mappings use the same named-action transport as
+    // the other gestures; the legacy path uses the per-title MCC buttons below.
+    uint32_t GrenadeGestureBinding(GameTitle title,vr_mapping::Action action,uint64_t now)
+    {
+        const int index=weapon_interaction::TitleIndex(title);
+        if(index<0) return 0;
+        if(g_config.vr_action_mapping) return WeaponGestureBinding(title,action,now);
+        return weapon_interaction::Button(action==vr_mapping::Grenade?
+            g_config.weapon_grenade_button[index]:g_config.weapon_grenade_switch_button[index]);
     }
     // Raw VR control that currently drives a named action, matching input.cpp:
     // semantic mappings resolve the per-title VR binding; the legacy path maps
@@ -9891,6 +9902,9 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
     realistic_reload::DropPool g_reloadDrops;
     weapon_accessory::Presentation g_reloadDropAccessories[realistic_reload::DropPool::kCapacity];
     std::atomic<unsigned> g_realisticEjects{0},g_realisticInserts{0},g_realisticFinishes{0},g_realisticCancels{0};
+    grenade_gesture::State g_grenades;
+    weapon_accessory::Presentation g_grenadeAccessory; // compositor thread only
+    std::atomic<unsigned> g_grenadeGrabs{0},g_grenadeSwitches{0},g_grenadeThrows{0},g_grenadePutBacks{0};
     std::atomic<HRESULT> g_weaponAccessoryResult{S_FALSE};
     std::atomic<unsigned> g_weaponGestureGrabs{0},g_weaponReloadRequests{0},g_weaponSwapRequests{0};
     std::atomic<unsigned> g_authoredInsertionRequests{0},g_fallbackInsertionRequests{0};
@@ -13928,7 +13942,7 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
         const float rawSupportGrip=pad.gripL;
         weapon_interaction::Output weaponGesture{};
         if(g_config.manual_reload || g_config.weapon_holsters || g_weaponInteraction.HasClaimedGrip() ||
-            g_realisticReload.HasClaimedGrip())
+            g_realisticReload.HasClaimedGrip() || g_config.weapon_grenades || g_grenades.HasClaimedGrip())
         {
             // Use the same predicted-time head and controller space. This
             // optional extra locate does not change the late camera sample.
@@ -13991,14 +14005,21 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
             const auto& supportQ=leftLocation.pose.orientation;
             const weapon_interaction::Quat supportRotation{supportQ.x,supportQ.y,supportQ.z,supportQ.w};
             realistic_reload::Output stepReload{};
+            // Raw face buttons before any gesture hides them from Halo.
+            const bool rawA=pad.a,rawB=pad.b,rawX=pad.x,rawY=pad.y;
             if(realistic||g_realisticReload.HasClaimedGrip())
             {
                 const int reloadSource=VrSourceForAction(sample.title,vr_mapping::Reload);
                 const bool* reloadControl=PadButtonForSource(pad,reloadSource);
+                // A held grenade owns its controller's face buttons (type switch).
+                const bool grenadeRight=grenade_gesture::State::RightController(g_grenades.Holding(),leftHanded);
+                const bool grenadeOwnsReload=g_grenades.Holding()!=grenade_gesture::Hand::None&&
+                    (grenadeRight?(reloadSource==vr_mapping::A||reloadSource==vr_mapping::B):
+                        (reloadSource==vr_mapping::X||reloadSource==vr_mapping::Y));
                 realistic_reload::Sample stepSample{};
                 stepSample.base=sample;
                 stepSample.reloadSourceSupported=reloadControl!=nullptr;
-                stepSample.reloadSourceHeld=reloadControl&&*reloadControl;
+                stepSample.reloadSourceHeld=reloadControl&&*reloadControl&&!grenadeOwnsReload;
                 realistic_reload::Settings stepSettings{};
                 stepSettings.enabled=realistic;
                 stepSettings.finishStep=g_config.manual_reload_finish_step;
@@ -14032,6 +14053,50 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                 if(stepReload.cancelled) g_realisticCancels.fetch_add(1,std::memory_order_relaxed);
             }
             g_reloadDrops.Step(inputNow,g_config.weapon_drop_linger_s);
+            // Chest grenades take only grips no other gesture claimed this frame.
+            grenade_gesture::Output grenade{};
+            if(g_config.weapon_grenades||g_grenades.HasClaimedGrip())
+            {
+                grenade_gesture::Sample grenadeSample{};
+                grenadeSample.now=sample.now;grenadeSample.space=sample.space;
+                grenadeSample.generation=sample.generation;grenadeSample.title=sample.title;
+                grenadeSample.ready=sample.ready;grenadeSample.dualWield=sample.dualWield;
+                grenadeSample.head=sample.head;grenadeSample.headRotation=sample.headRotation;
+                grenadeSample.primary=sample.primary;grenadeSample.primaryRotation=sample.primaryRotation;
+                grenadeSample.support=sample.support;grenadeSample.supportRotation=supportRotation;
+                grenadeSample.primaryGrip=sample.primaryGrip;grenadeSample.supportGrip=sample.supportGrip;
+                grenadeSample.primaryBusy=weaponGesture.consumePrimary;
+                grenadeSample.supportBusy=weaponGesture.consumeSupport;
+                grenadeSample.a=rawA;grenadeSample.b=rawB;grenadeSample.x=rawX;grenadeSample.y=rawY;
+                grenade_gesture::Settings grenadeSettings{};
+                grenadeSettings.enabled=g_config.weapon_grenades;grenadeSettings.leftHanded=leftHanded;
+                grenadeSettings.zoneRadius=g_config.weapon_grenade_zone_radius_m;
+                grenadeSettings.chestDown=g_config.weapon_grenade_chest_down_m;
+                grenadeSettings.throwSpeed=g_config.weapon_grenade_throw_speed_mps;
+                grenadeSettings.throwButton=GrenadeGestureBinding(sample.title,vr_mapping::Grenade,inputNow);
+                grenadeSettings.switchButton=GrenadeGestureBinding(sample.title,vr_mapping::SwitchGrenade,inputNow);
+                grenade=g_grenades.Update(grenadeSample,grenadeSettings);
+                if(grenade.withholdA) pad.a=false;
+                if(grenade.withholdB) pad.b=false;
+                if(grenade.withholdX) pad.x=false;
+                if(grenade.withholdY) pad.y=false;
+                if(grenade.withholdPrimaryTrigger) pad.trigR=0;
+                if(grenade.withholdSupportTrigger) pad.trigL=0;
+                weaponGesture.consumePrimary|=grenade.consumePrimary;
+                weaponGesture.consumeSupport|=grenade.consumeSupport;
+                weaponGesture.releaseTwoHand|=grenade.releaseTwoHand;
+                weaponGesture.buttons|=grenade.buttons;
+                weaponGesture.pulseUntil=(std::max)(weaponGesture.pulseUntil,grenade.pulseUntil);
+                weaponGesture.primaryHaptic=(std::max)(weaponGesture.primaryHaptic,grenade.primaryHaptic);
+                weaponGesture.supportHaptic=(std::max)(weaponGesture.supportHaptic,grenade.supportHaptic);
+                if(grenade.grabbed) g_grenadeGrabs.fetch_add(1,std::memory_order_relaxed);
+                if(grenade.switched) g_grenadeSwitches.fetch_add(1,std::memory_order_relaxed);
+                if(grenade.thrown) g_grenadeThrows.fetch_add(1,std::memory_order_relaxed);
+                if(grenade.putBack) g_grenadePutBacks.fetch_add(1,std::memory_order_relaxed);
+                g_grenadeAccessory=grenade_gesture::BuildPresentation(grenadeSample,grenadeSettings,grenade,
+                    sample.weaponGraph);
+            }
+            else g_grenadeAccessory={};
             if(realistic)
             {
                 g_weaponAccessory=realistic_reload::BuildPresentation(sample,settings,g_realisticReload,
@@ -14078,6 +14143,8 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
             g_weaponInteraction.Reset();
             g_realisticReload.Reset();
             g_reloadDrops.Reset();
+            g_grenades.Reset();
+            g_grenadeAccessory={};
             g_weaponAccessory={};
             for(auto& dropped:g_reloadDropAccessories) dropped={};
             g_weaponGestureReadyMs.store(0,std::memory_order_release);
@@ -16910,6 +16977,9 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                                     if(weapon_accessory::Current(g_weaponAccessory,title,generation,space,
                                         heldIdentity,now,g_config.manual_reload,accessoryGameplay))
                                         accessoryItems[accessoryCount++]=&g_weaponAccessory;
+                                    if(weapon_accessory::Current(g_grenadeAccessory,title,generation,space,
+                                        heldIdentity,now,g_config.weapon_grenades,accessoryGameplay))
+                                        accessoryItems[accessoryCount++]=&g_grenadeAccessory;
                                     for(const auto& dropped:g_reloadDropAccessories)
                                         if(accessoryCount<WeaponAccessoryRenderer::kMaxItems&&
                                             weapon_accessory::Current(dropped,title,generation,space,heldIdentity,now,
@@ -22244,7 +22314,8 @@ void VR_GetPadState(VrPadState& out)
         out.weaponSwitchBinding!=WeaponGestureBinding(weaponTitle,vr_mapping::SwitchWeapon,now)||
         !weapon_interaction::Fresh(now,out.weaponSampleMs,weaponTitle,out.weaponTitle,
         TitleAdapter_GetGeneration(weaponTitle),out.weaponGeneration,
-        (g_config.manual_reload||g_config.weapon_holsters)&&Game_IsHeadTracking()&&VR_IsStereoEnabled()&&
+        (g_config.manual_reload||g_config.weapon_holsters||g_config.weapon_grenades)&&
+        Game_IsHeadTracking()&&VR_IsStereoEnabled()&&
         TitleAdapter_GetRuntimeMode()==RuntimeMode::Gameplay&&
         g_sessionStateShared.load(std::memory_order_acquire)==XR_SESSION_STATE_FOCUSED&&
         !Menu_IsOpen()&&!VR_IsPausePresentation()&&!VR_IsPausePresentationTarget()&&!VR_IsCutsceneTheaterActive()))
@@ -22411,6 +22482,25 @@ void VR_ReportWeaponInteractions(uint64_t nowMs)
                 g_config.manual_reload_finish_step?1u:0u,g_config.manual_reload_block_fire?1u:0u);
         }
         previousRealistic=realistic;previousEjects=ejects;previousFinishes=finishes;previousCancels=cancels;
+    }
+    {
+        static unsigned previousGrenadeGrabs=0,previousThrows=0;
+        static bool previousGrenades=false;
+        const bool grenades=g_config.weapon_grenades;
+        const unsigned grenadeGrabs=g_grenadeGrabs.load(std::memory_order_relaxed);
+        const unsigned throws=g_grenadeThrows.load(std::memory_order_relaxed);
+        if((grenades||previousGrenades)&&(changed||grenades!=previousGrenades||
+            grenadeGrabs!=previousGrenadeGrabs||throws!=previousThrows))
+            LOG("Chest grenades: enabled=%u title=%s throwTransport=0x%05X switchTransport=0x%05X grabs=%u "
+                "switches=%u throws=%u putBack=%u throwSpeed=%.2f zone=%.2f chestDown=%.2f "
+                "(requests only; Halo decides count, type and trajectory)",
+                grenades?1u:0u,index>=0?weapon_interaction::kTitleNames[index]:"none",
+                GrenadeGestureBinding(title,vr_mapping::Grenade,nowMs),
+                GrenadeGestureBinding(title,vr_mapping::SwitchGrenade,nowMs),grenadeGrabs,
+                g_grenadeSwitches.load(std::memory_order_relaxed),throws,
+                g_grenadePutBacks.load(std::memory_order_relaxed),g_config.weapon_grenade_throw_speed_mps,
+                g_config.weapon_grenade_zone_radius_m,g_config.weapon_grenade_chest_down_m);
+        previousGrenades=grenades;previousGrenadeGrabs=grenadeGrabs;previousThrows=throws;
     }
     previousOptions=options;previousTitle=title;previousBindings=bindings;previousReady=ready;
     previousGrabs=grabs;previousReloads=reloads;previousSwaps=swaps;lastReport=nowMs;

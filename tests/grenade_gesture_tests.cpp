@@ -1,0 +1,159 @@
+#include "../src/common/grenade_gesture_logic.h"
+#include "../src/common/weapon_generic_magazine.h"
+#include <cstdio>
+#include <iterator>
+
+using namespace grenade_gesture;
+unsigned checks{},failures{};
+void Check(bool ok,const char* message)
+{ ++checks;if(!ok){++failures;std::printf("FAIL: %s\n",message);} }
+
+constexpr uint32_t kThrow=1u<<16, kSwitch=0x100;
+struct Rig
+{
+    State state;
+    Settings c;
+    Sample s;
+    Vec chest{};
+    Output last{};
+    explicit Rig(bool left=false)
+    {
+        c.enabled=true;c.leftHanded=left;c.throwButton=kThrow;c.switchButton=kSwitch;
+        s.title=GameTitle::Halo3;s.generation=2;s.space=5;s.ready=true;s.now=1000;
+        s.head={0,1.65f,0};s.headRotation=s.primaryRotation=s.supportRotation={0,0,0,1};
+        s.primary={0.22f,1.25f,-0.45f};s.support={-0.25f,1.20f,-0.40f};
+        Chest(s,c,chest);
+        Step();Step();
+    }
+    Output Step(unsigned dt=11) { s.now+=dt;last=state.Update(s,c);return last; }
+    Output GrabSupport() { s.support=chest;s.supportGrip=0;Step();s.supportGrip=1;return Step(); }
+    Output GrabPrimary() { s.primary=chest;s.primaryGrip=0;Step();s.primaryGrip=1;return Step(); }
+    // Move the holding hand along a direction at a speed, then let go.
+    Output Throw(bool support,Vec direction,float speed,unsigned frames=12)
+    {
+        Output o{};
+        for(unsigned i=0;i<frames;++i)
+        {
+            Vec& hand=support?s.support:s.primary;
+            hand=hand+direction*(speed*0.011f);
+            o=Step();
+        }
+        (support?s.supportGrip:s.primaryGrip)=0;
+        return Step();
+    }
+    // Run frames until any pulse appears; return its button.
+    uint32_t NextPulse(unsigned frames=40)
+    {
+        for(unsigned i=0;i<frames;++i) { auto o=Step(); if(o.buttons) return o.buttons; }
+        return 0;
+    }
+};
+
+void ChestZoneAndGrab()
+{
+    Rig rig;
+    Check(Finite(rig.chest)&&rig.chest.y<1.65f-0.2f&&rig.chest.z<0,"chest in front, below the head");
+    auto o=rig.GrabSupport();
+    Check(o.grabbed&&o.holding==Hand::Support&&o.consumeSupport&&o.releaseTwoHand,"support hand takes grenade");
+    Check(o.withholdX&&o.withholdY&&!o.withholdA,"left buttons belong to the grenade");
+    Check(o.withholdSupportTrigger&&!o.withholdPrimaryTrigger,"holding hand trigger withheld");
+    Rig away;away.s.support={0.6f,0.6f,0.6f};away.s.supportGrip=0;away.Step();away.s.supportGrip=1;o=away.Step();
+    Check(!o.grabbed,"no grenade away from chest");
+    Rig carried;carried.s.supportGrip=1;carried.Step();carried.s.support=carried.chest;o=carried.Step();
+    Check(!o.grabbed,"already-held grip carried to chest is not a grab");
+    Rig busy;busy.s.supportBusy=true;o=busy.GrabSupport();
+    Check(!o.grabbed,"grip claimed by reload/holster is not stolen");
+    Rig primary;o=primary.GrabPrimary();
+    Check(o.grabbed&&o.holding==Hand::Primary&&o.consumePrimary&&o.withholdA&&o.withholdB&&!o.withholdX,
+        "weapon hand takes grenade with A/B");
+    Rig left(true);o=left.GrabPrimary();
+    Check(o.holding==Hand::Primary&&o.withholdX&&o.withholdY&&!o.withholdA,"left-handed weapon hand uses X/Y");
+}
+
+void SwitchTypes()
+{
+    Rig rig;rig.GrabSupport();
+    rig.s.x=true;auto o=rig.Step();
+    Check(o.switched&&o.withholdX,"X switches grenade and is hidden from Halo");
+    Check(rig.NextPulse()==kSwitch||o.buttons==kSwitch,"switch pulse sent");
+    rig.Step(200);rig.s.x=false;rig.Step();
+    rig.s.y=true;o=rig.Step();Check(o.switched,"Y also switches");
+    rig.s.y=false;rig.Step();
+    rig.s.x=true;rig.Step();rig.s.x=false;rig.Step();rig.s.x=true;rig.Step();rig.s.x=false;
+    unsigned pulses=0;bool gap=true,previous=false;
+    for(int i=0;i<80;++i) { auto p=rig.Step(); if(p.buttons&&!previous) ++pulses; previous=p.buttons!=0; }
+    (void)gap;
+    Check(pulses>=2,"queued presses become separate native presses");
+    rig.s.a=true;o=rig.Step();Check(!o.switched&&!o.withholdA,"A on the other hand stays normal");
+    rig.s.a=false;rig.Step();
+    // A button held at grab time is not a press.
+    Rig held;held.s.x=true;held.Step();o=held.GrabSupport();
+    o=held.Step();Check(!o.switched,"held button at grab ignored");
+}
+
+void Throwing()
+{
+    Rig rig;rig.GrabSupport();
+    auto o=rig.Throw(true,{0,0.2f,-1},3.0f);
+    Check(o.thrown&&o.holding==Hand::None,"fast forward release throws");
+    Check(o.releaseVelocity.z<-1.0f,"release velocity measured");
+    Check(o.buttons==kThrow||rig.NextPulse()==kThrow,"native throw pressed");
+    Rig slow;slow.GrabSupport();
+    o=slow.Throw(true,{0,0,-1},0.5f);
+    Check(o.putBack&&!o.thrown,"slow release puts it back");
+    Check(!slow.NextPulse(),"no throw after putting back");
+    Rig backwards;backwards.GrabSupport();
+    o=backwards.Throw(true,{0,0,1},3.0f);
+    Check(!o.thrown,"backwards flick is not a throw");
+    // Switch requested before the throw is sent first.
+    Rig order;order.GrabSupport();
+    order.s.x=true;order.Step();order.s.x=false;
+    o=order.Throw(true,{0,0,-1},3.0f,8);
+    uint32_t first=o.buttons?o.buttons:order.NextPulse();
+    Check(first==kSwitch||first==0,"switch first");
+    // The press that switched may already be done; the throw must still come.
+    bool sawThrow=o.buttons==kThrow;
+    for(int i=0;i<60&&!sawThrow;++i) sawThrow=order.Step().buttons==kThrow;
+    Check(sawThrow,"throw follows the switch");
+    // Holding the face button while throwing keeps it hidden until released.
+    Rig drain;drain.GrabSupport();drain.s.y=true;drain.Step();
+    o=drain.Throw(true,{0,0,-1},3.0f);
+    Check(o.withholdY,"held Y stays hidden after throwing");
+    drain.s.y=false;o=drain.Step();Check(!o.withholdY,"released Y is normal again");
+}
+
+void Cancelling()
+{
+    Rig rig;rig.GrabSupport();
+    rig.s.dualWield=true;auto o=rig.Step();
+    Check(o.cancelled&&o.holding==Hand::None,"dual wield cancels");
+    Check(o.consumeSupport,"grip stays claimed until release");
+    rig.s.supportGrip=0;o=rig.Step();o=rig.Step();Check(!o.consumeSupport,"released");
+    Rig paused;paused.GrabSupport();paused.s.ready=false;o=paused.Step();
+    Check(o.holding==Hand::None&&!o.withholdX,"pause cancels");
+    Rig off;off.c.enabled=false;o=off.GrabSupport();Check(!o.grabbed,"disabled");
+    Rig noThrow;noThrow.c.throwButton=0;o=noThrow.GrabSupport();Check(!o.grabbed,"no throw binding, no gesture");
+    Rig gap;gap.GrabSupport();o=gap.Step(400);Check(o.holding==Hand::None,"tracking gap cancels");
+}
+
+void Presentation()
+{
+    Rig rig;
+    auto p=BuildPresentation(rig.s,rig.c,rig.last,7);
+    Check(p.model==&weapon_model::kGrenadeTokenModel&&Near(p.pose.position,rig.chest,1e-4f),"grenade shown at chest");
+    rig.GrabSupport();
+    p=BuildPresentation(rig.s,rig.c,rig.last,7);
+    Check(Near(p.pose.position,rig.s.support,0.06f)&&p.identity==7,"grenade in hand");
+    Check(weapon_model::UsesTokenGeometry(&weapon_model::kGrenadeTokenModel)&&
+        std::size(weapon_model::kGenericVertices)>=size_t(weapon_model::kGrenadeTokenModel.firstVertex+
+        weapon_model::kGrenadeTokenModel.vertexCount),"grenade token vertices");
+    Rig dual;dual.s.dualWield=true;dual.Step();
+    Check(!BuildPresentation(dual.s,dual.c,dual.last,7).model,"hidden while dual wielding");
+}
+
+int main()
+{
+    ChestZoneAndGrab();SwitchTypes();Throwing();Cancelling();Presentation();
+    std::printf("Grenade gesture: %u checks, %u failures\n",checks,failures);
+    return failures?1:0;
+}

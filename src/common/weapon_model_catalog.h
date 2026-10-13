@@ -25,8 +25,13 @@ inline constexpr Model kGenericReloadModel{GameTitle::None,0,"generic reload tok
 inline constexpr Model kPrometheanReloadModel{GameTitle::Halo4,0,"Promethean reload item",false,0,0,36,{},{}};
 // Mod-authored shotgun shell for the step-by-step reload; token vertices 36..71.
 inline constexpr Model kShellReloadModel{GameTitle::None,0,"shell reload token",false,0,36,36,{},{}};
+// Mod-authored chest grenade; token vertices 72..107. Halo decides the type.
+inline constexpr Model kGrenadeTokenModel{GameTitle::None,0,"grenade token",false,0,72,36,{},{}};
 inline bool UsesTokenGeometry(const Model* model) noexcept
-{ return model==&kGenericReloadModel || model==&kPrometheanReloadModel || model==&kShellReloadModel; }
+{
+    return model==&kGenericReloadModel || model==&kPrometheanReloadModel || model==&kShellReloadModel ||
+        model==&kGrenadeTokenModel;
+}
 }
 #include "weapon_models.generated.h"
 namespace weapon_model

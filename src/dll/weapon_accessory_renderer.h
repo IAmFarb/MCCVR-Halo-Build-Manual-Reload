@@ -15,7 +15,7 @@ public:
     // Several items (reserve/held part plus parts lying on the floor) share one
     // self-depth clear and one command list. Invalid items are skipped; the
     // call fails only when none can be drawn.
-    static constexpr unsigned kMaxItems=4;
+    static constexpr unsigned kMaxItems=6;
     HRESULT DrawMany(ID3D11Device* device,ID3D11DeviceContext* immediate,
         ID3D11RenderTargetView* target,unsigned width,unsigned height,
         const D3D11_VIEWPORT& viewport,const weapon_accessory::Presentation* const* items,

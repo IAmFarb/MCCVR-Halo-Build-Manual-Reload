@@ -896,6 +896,15 @@ struct Config
     // X, RB, LB, B, Y, A, LT, RT. H3, ODST, Reach, H4, CE, H2.
     int weapon_reload_button[6]{0,0,0,0,0,0};
     int weapon_switch_button[6]{4,4,4,4,4,4};
+    // Chest grenades: grab at the chest, face buttons of that controller
+    // switch type, release with a throwing motion to throw.
+    bool weapon_grenades = false;
+    float weapon_grenade_zone_radius_m = 0.14f;
+    float weapon_grenade_chest_down_m = 0.32f;
+    float weapon_grenade_throw_speed_mps = 1.5f;
+    // Legacy (non-VR-mapping) MCC buttons, same index list as above: LT, LB.
+    int weapon_grenade_button[6]{6,6,6,6,6,6};
+    int weapon_grenade_switch_button[6]{2,2,2,2,2,2};
 
     // Two-handed weapon aiming: with the support hand on the gun front, aim
     // along the two-hand line instead of the primary wrist alone. Engages by

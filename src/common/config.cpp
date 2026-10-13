@@ -1153,13 +1153,17 @@ void ConfigLoad(const wchar_t* path)
         bool weaponButtonKey = false;
         for (unsigned i=0;i<weapon_interaction::kTitleCount;++i)
         {
-            char reloadKey[64]{},switchKey[64]{},flashlightKey[64]{};
+            char reloadKey[64]{},switchKey[64]{},flashlightKey[64]{},grenadeKey[64]{},grenadeSwitchKey[64]{};
             sprintf_s(reloadKey,"weapon_reload_button_%s",weapon_interaction::kTitleKeys[i]);
             sprintf_s(switchKey,"weapon_switch_button_%s",weapon_interaction::kTitleKeys[i]);
             sprintf_s(flashlightKey,"flashlight_button_%s",weapon_interaction::kTitleKeys[i]);
+            sprintf_s(grenadeKey,"weapon_grenade_button_%s",weapon_interaction::kTitleKeys[i]);
+            sprintf_s(grenadeSwitchKey,"weapon_grenade_switch_button_%s",weapon_interaction::kTitleKeys[i]);
             const bool flashlightKeyMatch=!strcmp(key,flashlightKey);
             int* setting=!strcmp(key,reloadKey)?&g_config.weapon_reload_button[i]:
                 !strcmp(key,switchKey)?&g_config.weapon_switch_button[i]:
+                !strcmp(key,grenadeKey)?&g_config.weapon_grenade_button[i]:
+                !strcmp(key,grenadeSwitchKey)?&g_config.weapon_grenade_switch_button[i]:
                 flashlightKeyMatch?&g_config.flashlight_button[i]:nullptr;
             if (!setting) continue;
             char* end=nullptr;
@@ -1182,13 +1186,17 @@ void ConfigLoad(const wchar_t* path)
         if (!strcmp(key,"manual_reload_realistic")) { g_config.manual_reload_realistic=atoi(val)!=0;continue; }
         if (!strcmp(key,"manual_reload_finish_step")) { g_config.manual_reload_finish_step=atoi(val)!=0;continue; }
         if (!strcmp(key,"manual_reload_block_fire")) { g_config.manual_reload_block_fire=atoi(val)!=0;continue; }
+        if (!strcmp(key,"weapon_grenades")) { g_config.weapon_grenades=atoi(val)!=0;continue; }
         {
             struct RealisticRange { const char* key; float* value; float low,high; };
             const RealisticRange ranges[]{
                 {"weapon_finish_radius_m",&g_config.weapon_finish_radius_m,0.06f,0.25f},
                 {"weapon_finish_travel_m",&g_config.weapon_finish_travel_m,0.03f,0.15f},
                 {"weapon_drop_floor_m",&g_config.weapon_drop_floor_m,0.80f,2.40f},
-                {"weapon_drop_linger_s",&g_config.weapon_drop_linger_s,0.50f,15.0f}};
+                {"weapon_drop_linger_s",&g_config.weapon_drop_linger_s,0.50f,15.0f},
+                {"weapon_grenade_zone_radius_m",&g_config.weapon_grenade_zone_radius_m,0.06f,0.30f},
+                {"weapon_grenade_chest_down_m",&g_config.weapon_grenade_chest_down_m,0.15f,0.60f},
+                {"weapon_grenade_throw_speed_mps",&g_config.weapon_grenade_throw_speed_mps,0.60f,4.0f}};
             bool matched=false;
             for(const auto& range:ranges) if(!strcmp(key,range.key))
             {
@@ -2486,6 +2494,11 @@ void ConfigSave()
     fprintf(f, "# Ejected parts fall to this distance below your head, then vanish after the linger time.\n");
     fprintf(f, "weapon_drop_floor_m = %.3f\nweapon_drop_linger_s = %.2f\n",
         g_config.weapon_drop_floor_m,g_config.weapon_drop_linger_s);
+    fprintf(f, "# Chest grenades: grip at the chest takes a grenade; that controller's face buttons\n");
+    fprintf(f, "# switch grenade type while holding; let go with a throwing motion to throw.\n");
+    fprintf(f, "weapon_grenades = %d\nweapon_grenade_zone_radius_m = %.3f\nweapon_grenade_chest_down_m = %.3f\n",
+        g_config.weapon_grenades?1:0,g_config.weapon_grenade_zone_radius_m,g_config.weapon_grenade_chest_down_m);
+    fprintf(f, "weapon_grenade_throw_speed_mps = %.2f\n",g_config.weapon_grenade_throw_speed_mps);
     fprintf(f, "weapon_pouch_down_m = %.3f\nweapon_body_zone_radius_m = %.3f\n",
         g_config.weapon_pouch_down_m,g_config.weapon_body_zone_radius_m);
     fprintf(f, "# Holster location: 0 = weapon-side shoulder, 1 = weapon-side hip.\n");
@@ -2510,6 +2523,8 @@ void ConfigSave()
     {
         fprintf(f,"weapon_reload_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_reload_button[i]);
         fprintf(f,"weapon_switch_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_switch_button[i]);
+        fprintf(f,"weapon_grenade_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_grenade_button[i]);
+        fprintf(f,"weapon_grenade_switch_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_grenade_switch_button[i]);
     }
     fprintf(f,"\n# VR action bindings: 0=automatic, 1=unbound. Edited in VR Mappings.\n");
     fprintf(f,"physical_crouch = %d\nphysical_crouch_depth_m = %.3f\n",

@@ -1273,6 +1273,20 @@ namespace
             if(!g_config.weapon_holster_slide&&!g_config.weapon_holster_click)
                 ImGui::TextDisabled("Choose a gesture to enable holster switching.");
         }
+        changed |= ImGui::Checkbox("Chest grenades (grab, switch, throw)", &g_config.weapon_grenades);
+        if (g_config.weapon_grenades)
+        {
+            ImGui::TextDisabled("Squeeze grip with either hand at the middle of your chest to take a grenade.\n"
+                "While holding it, A or B (right hand) / X or Y (left hand) switch grenade type.\n"
+                "Let go while throwing forward to throw; let go slowly to put it back.\n"
+                "Halo still decides grenade count, type and where it flies (your aim).");
+            changed |= vr_menu::SliderFloat("Chest depth below head (m)",
+                &g_config.weapon_grenade_chest_down_m,0.15f,0.60f,"%.2f");
+            changed |= vr_menu::SliderFloat("Grenade grab size (m)",
+                &g_config.weapon_grenade_zone_radius_m,0.06f,0.30f,"%.2f");
+            changed |= vr_menu::SliderFloat("Throw speed needed (m/s)",
+                &g_config.weapon_grenade_throw_speed_mps,0.60f,4.0f,"%.1f");
+        }
         if (g_config.manual_reload || g_config.weapon_holsters)
         {
             changed |= vr_menu::SliderFloat("Pouch / hip depth below head (m)",
