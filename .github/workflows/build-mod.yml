@@ -1,12 +1,16 @@
 # Builds, tests and packages the mod on a GitHub-hosted Windows machine, using
 # the project's own packaging script (no -Install: nothing touches a game).
-# Download the result from the run's "Artifacts" section.
+# Download the result from the run's "Artifacts" section. If a run fails, its
+# console output is published to the `ci-logs` branch for diagnosis.
 name: Build mod
 
 on:
   push:
     branches: [step-by-step-reload]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   package:
@@ -25,7 +29,15 @@ jobs:
 
       - name: Build, test and package
         shell: powershell
-        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools/package-candidate.ps1
+        run: |
+          # Native stderr must not abort this wrapper (PowerShell 5.1); the
+          # packaging script's own exit code decides success.
+          $ErrorActionPreference = 'Continue'
+          # Log outside the repository: the script refuses a dirty worktree.
+          $log = Join-Path $env:RUNNER_TEMP 'build-output.txt'
+          powershell -NoProfile -ExecutionPolicy Bypass -File tools/package-candidate.ps1 *>&1 |
+            Tee-Object -FilePath $log
+          exit $LASTEXITCODE
 
       - name: Upload mod packages
         if: success()
@@ -37,12 +49,24 @@ jobs:
             out/candidates/*SHA256.txt
           if-no-files-found: error
 
-      - name: Upload build logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-logs
-          path: |
-            out/build/release/CMakeFiles/*.log
-            out/build/release/Testing/Temporary/LastTest.log
-          if-no-files-found: ignore
+      - name: Publish console output to the ci-logs branch
+        if: always()
+        shell: powershell
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $dir = Join-Path $env:RUNNER_TEMP 'ci-logs'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $src = Join-Path $env:RUNNER_TEMP 'build-output.txt'
+          if (Test-Path $src) { Copy-Item $src (Join-Path $dir 'build-output.txt') }
+          Get-ChildItem -Path out/build/release/CMakeFiles -Filter *.log -ErrorAction SilentlyContinue |
+            Copy-Item -Destination $dir
+          $lastTest = 'out/build/release/Testing/Temporary/LastTest.log'
+          if (Test-Path $lastTest) { Copy-Item $lastTest $dir }
+          "${{ github.sha }} ${{ job.status }}" | Set-Content (Join-Path $dir 'run.txt')
+          Set-Location $dir
+          git init -q
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "CI log for ${{ github.sha }}"
+          git push -q --force "https://x-access-token:$env:TOKEN@github.com/${{ github.repository }}.git" HEAD:refs/heads/ci-logs
