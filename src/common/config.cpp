@@ -1190,6 +1190,7 @@ void ConfigLoad(const wchar_t* path)
         if (!strcmp(key,"manual_reload_finish_step")) { g_config.manual_reload_finish_step=atoi(val)!=0;continue; }
         if (!strcmp(key,"manual_reload_block_fire")) { g_config.manual_reload_block_fire=atoi(val)!=0;continue; }
         if (!strcmp(key,"weapon_grenades")) { g_config.weapon_grenades=atoi(val)!=0;continue; }
+        if (!strcmp(key,"fork_feature_setup")) { g_config.fork_feature_setup=(std::max)(0,atoi(val));continue; }
         {
             struct RealisticRange { const char* key; float* value; float low,high; };
             const RealisticRange ranges[]{
@@ -1199,6 +1200,7 @@ void ConfigLoad(const wchar_t* path)
                 {"weapon_drop_linger_s",&g_config.weapon_drop_linger_s,0.50f,15.0f},
                 {"weapon_grenade_zone_radius_m",&g_config.weapon_grenade_zone_radius_m,0.06f,0.30f},
                 {"weapon_grenade_chest_down_m",&g_config.weapon_grenade_chest_down_m,0.15f,0.60f},
+                {"weapon_grenade_chest_side_m",&g_config.weapon_grenade_chest_side_m,-0.30f,0.30f},
                 {"weapon_grenade_throw_speed_mps",&g_config.weapon_grenade_throw_speed_mps,0.60f,4.0f}};
             bool matched=false;
             for(const auto& range:ranges) if(!strcmp(key,range.key))
@@ -1794,6 +1796,20 @@ void ConfigLoadMigrating(const wchar_t* primaryPath, const wchar_t* legacyPath)
         return;
     }
     ConfigLoad(primaryPath);
+}
+
+void Config_ApplyFeatureSetup()
+{
+    constexpr int kFeatureSetup=1;
+    if (g_config.fork_feature_setup>=kFeatureSetup) return;
+    g_config.manual_reload=true;
+    g_config.manual_reload_realistic=true;
+    g_config.manual_reload_disable_auto=true;
+    g_config.weapon_grenades=true;
+    g_config.fork_feature_setup=kFeatureSetup;
+    ConfigSave();
+    LOG("config: first-run setup switched on Manual Reload, Step-by-step reload, Disable automatic reload "
+        "and Chest grenades (F1 > Reload and holsters can turn them off again)");
 }
 
 void ConfigSave()
@@ -2502,6 +2518,10 @@ void ConfigSave()
     fprintf(f, "weapon_grenades = %d\nweapon_grenade_zone_radius_m = %.3f\nweapon_grenade_chest_down_m = %.3f\n",
         g_config.weapon_grenades?1:0,g_config.weapon_grenade_zone_radius_m,g_config.weapon_grenade_chest_down_m);
     fprintf(f, "weapon_grenade_throw_speed_mps = %.2f\n",g_config.weapon_grenade_throw_speed_mps);
+    fprintf(f, "# Grenade sideways from chest centre toward the weapon hand (right chest when right-handed).\n");
+    fprintf(f, "weapon_grenade_chest_side_m = %.3f\n",g_config.weapon_grenade_chest_side_m);
+    fprintf(f, "# Reload/grenade first-run setup already applied (do not edit).\n");
+    fprintf(f, "fork_feature_setup = %d\n",g_config.fork_feature_setup);
     fprintf(f, "weapon_pouch_down_m = %.3f\nweapon_body_zone_radius_m = %.3f\n",
         g_config.weapon_pouch_down_m,g_config.weapon_body_zone_radius_m);
     fprintf(f, "# Holster location: 0 = weapon-side shoulder, 1 = weapon-side hip.\n");

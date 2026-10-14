@@ -4,7 +4,7 @@
 #include "weapon_accessory_logic.h"
 
 // Chest grenades (Titanfall-style): squeeze grip with either hand at the
-// chest to take a grenade. While holding it, that controller's face buttons
+// grenade on the chest (weapon-hand side by default) to take it. While holding it, that controller's face buttons
 // (A/B on the right controller, X/Y on the left) press Halo's Switch Grenade
 // instead of their normal actions. Let go with a throwing motion to press
 // Halo's Throw Grenade; let go slowly to put it back.
@@ -30,6 +30,7 @@ struct Settings
     bool enabled{}, leftHanded{};
     float zoneRadius{0.14f};
     float chestDown{0.32f};   // chest centre below the head
+    float chestSide{0.10f};   // toward the weapon hand: the right chest unless left-handed
     float throwSpeed{1.5f};   // m/s at release to count as a throw
     uint32_t throwButton{}, switchButton{};
 };
@@ -77,11 +78,15 @@ inline bool BodyForward(const Sample& s,Vec& forward) noexcept
     forward=forward*(1/std::sqrt(n));
     return true;
 }
+// The player's horizontal right for a body forward (OpenXR: +Y up, -Z ahead).
+inline Vec BodyRight(Vec forward) noexcept { return {-forward.z,0,forward.x}; }
+// Grenade on the chest, offset sideways toward the weapon hand.
 inline bool Chest(const Sample& s,const Settings& c,Vec& chest) noexcept
 {
     Vec forward{};
     if(!Finite(s.head)||!BodyForward(s,forward)) return false;
-    chest=s.head+forward*0.12f+Vec{0,-Setting(c.chestDown,0.15f,0.60f,0.32f),0};
+    const float side=Setting(c.chestSide,-0.30f,0.30f,0.10f)*(c.leftHanded?-1.0f:1.0f);
+    chest=s.head+forward*0.12f+BodyRight(forward)*side+Vec{0,-Setting(c.chestDown,0.15f,0.60f,0.32f),0};
     return Finite(chest);
 }
 // Grenade centre in the palm of the holding controller.

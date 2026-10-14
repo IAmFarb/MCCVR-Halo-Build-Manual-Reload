@@ -905,10 +905,17 @@ struct Config
     bool weapon_grenades = false;
     float weapon_grenade_zone_radius_m = 0.14f;
     float weapon_grenade_chest_down_m = 0.32f;
+    // Sideways from the chest centre toward the weapon hand (the right chest
+    // for right-handed play; left-handed mode mirrors it). Negative = other side.
+    float weapon_grenade_chest_side_m = 0.10f;
     float weapon_grenade_throw_speed_mps = 1.5f;
     // Legacy (non-VR-mapping) MCC buttons, same index list as above: LT, LB.
     int weapon_grenade_button[6]{6,6,6,6,6,6};
     int weapon_grenade_switch_button[6]{2,2,2,2,2,2};
+    // This fork's features are what the player installed it for. A config from
+    // before setup version 1 gets them switched on once (see
+    // Config_ApplyFeatureSetup); afterwards the player's own choices stand.
+    int fork_feature_setup = 0;
 
     // Two-handed weapon aiming: with the support hand on the gun front, aim
     // along the two-hand line instead of the primary wrist alone. Engages by
@@ -1524,3 +1531,7 @@ inline void ConfigReachSeatBeginTrimEdit(Config& c, int slot)
 void ConfigLoad(const wchar_t* path); // missing file -> file is created with defaults
 void ConfigLoadMigrating(const wchar_t* primaryPath, const wchar_t* legacyPath);
 void ConfigSave();
+// One-time switch-on of step-by-step reload (with automatic reload off) and
+// chest grenades for configs written before this fork set them up. Saves only
+// when it changes something. Called by the DLL after loading the config.
+void Config_ApplyFeatureSetup();

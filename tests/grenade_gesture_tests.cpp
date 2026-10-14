@@ -2,6 +2,8 @@
 #include "../src/common/weapon_generic_magazine.h"
 #include <cstdio>
 #include <iterator>
+#include <cmath>
+#include <limits>
 
 using namespace grenade_gesture;
 unsigned checks{},failures{};
@@ -151,9 +153,37 @@ void Presentation()
     Check(!BuildPresentation(dual.s,dual.c,dual.last,7).model,"hidden while dual wielding");
 }
 
+void RightChest()
+{
+    // Facing -Z with an identity head, the player's right is +X.
+    Rig rig;
+    Check(std::fabs(rig.chest.x-0.10f)<1e-4f&&std::fabs(rig.chest.z+0.12f)<1e-4f,
+        "grenade sits 10 cm toward the weapon hand: the right chest");
+    Rig left(true);
+    Check(std::fabs(left.chest.x+0.10f)<1e-4f,"left-handed mode mirrors it to the left chest");
+    Rig turned;
+    const float h=std::sqrt(0.5f);
+    turned.s.headRotation={0,h,0,h}; // yaw 90 degrees left: forward -X, right -Z
+    Vec chest{};Check(Chest(turned.s,turned.c,chest)&&std::fabs(chest.z+0.10f)<1e-4f&&
+        std::fabs(chest.x+0.12f)<1e-4f,"right chest follows the body direction");
+    Rig centre;centre.c.chestSide=0;Chest(centre.s,centre.c,chest);
+    Check(std::fabs(chest.x)<1e-4f,"zero side offset is the chest centre");
+    centre.c.chestSide=5;Chest(centre.s,centre.c,chest);
+    Check(std::fabs(chest.x-0.30f)<1e-4f,"side offset is clamped to 30 cm");
+    centre.c.chestSide=std::numeric_limits<float>::quiet_NaN();Chest(centre.s,centre.c,chest);
+    Check(std::fabs(chest.x-0.10f)<1e-4f,"invalid side offset falls back to the right chest");
+    Rig far;far.s.support={-0.10f,far.chest.y,far.chest.z};far.s.supportGrip=0;far.Step();
+    far.s.supportGrip=1;auto o=far.Step();
+    Check(!o.grabbed,"the left chest is empty for a right-handed player");
+    Rig shown;
+    const auto p=BuildPresentation(shown.s,shown.c,shown.last,0);
+    Check(p.model==&weapon_model::kGrenadeTokenModel&&std::fabs(p.pose.position.x-0.10f)<1e-4f,
+        "the chest grenade model is drawn on the right chest");
+}
+
 int main()
 {
-    ChestZoneAndGrab();SwitchTypes();Throwing();Cancelling();Presentation();
+    ChestZoneAndGrab();SwitchTypes();Throwing();Cancelling();Presentation();RightChest();
     std::printf("Grenade gesture: %u checks, %u failures\n",checks,failures);
     return failures?1:0;
 }

@@ -87,6 +87,7 @@ static DWORD WINAPI InitThread(LPVOID)
     const std::wstring primaryConfig = dir + L"halomccvr.cfg";
     const std::wstring legacyConfig = dir + L"halo3xr.cfg";
     ConfigLoadMigrating(primaryConfig.c_str(), legacyConfig.c_str());
+    Config_ApplyFeatureSetup();
     if (!Telemetry_Init())
         LOG("telemetry: recorder unavailable; VR startup continues");
 
