@@ -41,6 +41,12 @@ struct Runtime {
     std::atomic<bool> tailFaulted{};
     std::atomic<uint64_t> tails{},tailFallback{};
     std::atomic<unsigned> tailFallbackMask{};
+    // Diagnostic trace of the local player's reload messages: kind (8 bits),
+    // extra (24 bits), value (32 bits). Lock-free ring; logged by the poll.
+    static constexpr unsigned kTrace=64;
+    std::atomic<uint64_t> trace[kTrace]{};
+    std::atomic<uint32_t> traceHead{};
+    uint32_t traceLogged{};
 };
 Runtime runtime[native_reload::Count];
 thread_local int animationScope=-1;
@@ -51,6 +57,16 @@ struct TailCapture {
 };
 thread_local TailCapture* tailScope=nullptr;
 thread_local bool tailAction=false;
+// Set while a local player's weapon message runs, so nested playback and
+// duration queries it causes can be traced (diagnostic only).
+thread_local int traceScope=-1;
+enum TraceKind : uint8_t { TraceAction=1,TracePlay,TraceState,TraceDuration,TraceAuto };
+void Trace(unsigned i,TraceKind kind,uint32_t extra,uint32_t value) noexcept
+{
+    auto& r=runtime[i];
+    const uint32_t slot=r.traceHead.fetch_add(1,std::memory_order_relaxed)%Runtime::kTrace;
+    r.trace[slot].store((uint64_t(kind)<<56)|(uint64_t(extra&0xFFFFFFu)<<32)|value,std::memory_order_relaxed);
+}
 
 bool Current(unsigned i,unsigned option)
 {
@@ -90,6 +106,8 @@ template<unsigned I> uint8_t __fastcall AutoHook(uint32_t weapon,int16_t magazin
     __try {
         const bool suppress=Current(I,1) && caller==r.base+kBindings[I].autoReturn && Owned(I,weapon);
         if (suppress) r.suppressed.fetch_add(1,std::memory_order_relaxed);
+        else if (Game_ReloadPolicyWeapon(kBindings[I].title,weapon))
+            Trace(I,TraceAuto,uint32_t(uint16_t(magazine))|(caller==r.base+kBindings[I].autoReturn?0x10000u:0u),continuation);
         else if constexpr(I==native_reload::CE) {
             TailCapture capture{I,weapon,magazine};
             auto* previous=tailScope;
@@ -121,38 +139,47 @@ template<unsigned I> void __fastcall StateHook(uint32_t weapon,int16_t magazine,
         if ((state==1 || state==3) && magazine>=0 && magazine<2 && Current(I,4) && !Current(I,2) && Owned(I,weapon))
             tailScope=&capture;
         reinterpret_cast<void(__fastcall*)(uint32_t,int16_t,int32_t)>(r.original[State])(weapon,magazine,state);
+        const uint64_t shortenedBefore=r.shortened.load(std::memory_order_relaxed);
         Shorten(I,weapon,magazine);
+        if (Game_ReloadPolicyWeapon(kBindings[I].title,weapon))
+            Trace(I,TraceState,uint32_t(uint16_t(magazine))|(r.shortened.load(std::memory_order_relaxed)!=shortenedBefore?0x10000u:0u),
+                uint32_t(state));
         if(tailScope) KeepReloadTail(capture);
     } __finally { tailScope=previousTail;timingScope=previous;r.callbacks.fetch_sub(1,std::memory_order_release); }
 }
 template<unsigned I> void __fastcall ActionHook(uint32_t unit,uint32_t weapon,uint32_t action,int32_t slot,uint8_t flag)
 {
     auto& r=runtime[I]; r.callbacks.fetch_add(1,std::memory_order_acq_rel);
-    const int previous=animationScope,previousTiming=timingScope;
+    const int previous=animationScope,previousTiming=timingScope,previousTrace=traceScope;
     const bool previousTailAction=tailAction;
     __try {
         const uint32_t actualWeapon=I==native_reload::CE ? unit : weapon;
         const uint32_t actualAction=I==native_reload::CE ? weapon : action;
         // Nested stock actions must not inherit an outer suppression decision.
-        animationScope=-1;timingScope=-1;
+        animationScope=-1;timingScope=-1;traceScope=-1;
+        if (Game_ReloadPolicyWeapon(kBindings[I].title,actualWeapon)) traceScope=I;
         tailAction=tailScope && tailScope->title==I && tailScope->weapon==actualWeapon &&
             native_reload::ReloadAction(I,actualAction);
         if (Current(I,2) && native_reload::SuppressAction(I,actualAction) && Owned(I,actualWeapon)) {
             animationScope=I;timingScope=I;
         }
+        if (traceScope==int(I))
+            Trace(I,TraceAction,(animationScope==int(I)?1u:0u)|((uint32_t(slot)&0xFF)<<8),actualAction);
         if constexpr(I==native_reload::CE)
             reinterpret_cast<void(__fastcall*)(uint32_t,uint32_t)>(r.original[Action])(unit,weapon);
         else if constexpr(I==native_reload::H4)
             reinterpret_cast<void(__fastcall*)(uint32_t,uint32_t,uint32_t,int32_t,uint8_t)>(r.original[Action])(unit,weapon,action,slot,flag);
         else
             reinterpret_cast<void(__fastcall*)(uint32_t,uint32_t,uint32_t,int32_t)>(r.original[Action])(unit,weapon,action,slot);
-    } __finally { tailAction=previousTailAction;animationScope=previous;timingScope=previousTiming;r.callbacks.fetch_sub(1,std::memory_order_release); }
+    } __finally { tailAction=previousTailAction;animationScope=previous;timingScope=previousTiming;traceScope=previousTrace;r.callbacks.fetch_sub(1,std::memory_order_release); }
 }
 template<unsigned I> uint8_t __fastcall PlayHook(uint32_t user,uint32_t slot,uint32_t animation,uint8_t flag)
 {
     auto& r=runtime[I];r.callbacks.fetch_add(1,std::memory_order_acq_rel);
     uint8_t result=0;
     __try {
+        if (traceScope==int(I))
+            Trace(I,TracePlay,(animationScope==int(I)&&Current(I,2)?1u:0u)|((slot&0xFF)<<8)|((user&0xFF)<<16),animation);
         if (animationScope==int(I) && Current(I,2)) {
             r.animations.fetch_add(1,std::memory_order_relaxed);
             // H4's specialized-animation handler returns false without changes
@@ -182,6 +209,13 @@ template<unsigned I> int16_t __fastcall DurationHook(uint32_t weapon,uint32_t an
         // Mode 2 is a keyframe query: preserve its native -1 sentinel.
         const bool durationQuery=I==native_reload::CE || mode==0 || mode==1 || mode==3;
         if (durationQuery && Current(I,2) && Owned(I,weapon) && (readyQuery || timingScope==int(I))) result=0;
+        else if (traceScope==int(I) || timingScope==int(I)) {
+            if constexpr(I==native_reload::CE)
+                result=reinterpret_cast<int16_t(__fastcall*)(uint32_t,int16_t,int16_t,int16_t)>(r.original[Duration])(weapon,int16_t(animation),int16_t(mode),int16_t(extra));
+            else
+                result=reinterpret_cast<int16_t(__fastcall*)(uint32_t,uint32_t,int32_t)>(r.original[Duration])(weapon,animation,mode);
+            Trace(I,TraceDuration,(uint32_t(mode)&0xF)|(uint32_t(uint16_t(result))<<4),animation);
+        }
         else if constexpr(I==native_reload::CE)
             result=reinterpret_cast<int16_t(__fastcall*)(uint32_t,int16_t,int16_t,int16_t)>(r.original[Duration])(weapon,int16_t(animation),int16_t(mode),int16_t(extra));
         else
@@ -304,6 +338,44 @@ void NativeReloadPolicy_Poll()
                 r.faulted.load()?" SKIP STOCK FALLBACK (guarded access fault)":"");
             LOG("Native reload tail title=%u retained=%llu stockFallback=%llu rejectedMask=0x%x (1=receipt 2=owner 4=channel 8=timing 16=tag 32=seek)%s",i,r.tails.load(),r.tailFallback.load(),r.tailFallbackMask.load(),
                 r.tailFaulted.load()?" SHORTENED STOCK FALLBACK (guarded access fault)":"");
+        }
+        if (r.module)
+        {
+            // Diagnostic: the local player's weapon messages since the last
+            // report (A=action s=skipped, P=playback, S=state m=magazine
+            // *=timers zeroed, D=duration query, U=reload request a=auto).
+            // Only around reloads: a magazine state change opens a 3 s window,
+            // so firing does not flood the log.
+            const uint32_t head=r.traceHead.load(std::memory_order_relaxed);
+            if (head-r.traceLogged>Runtime::kTrace) r.traceLogged=head-Runtime::kTrace;
+            static uint64_t traceWindowUntil[native_reload::Count]{};
+            for (uint32_t at=r.traceLogged;at!=head;++at)
+                if (unsigned(r.trace[at%Runtime::kTrace].load(std::memory_order_relaxed)>>56)==TraceState)
+                { traceWindowUntil[i]=now+3000;break; }
+            if (now>=traceWindowUntil[i]) r.traceLogged=head;
+            while (r.traceLogged!=head)
+            {
+                char line[640];size_t used=0;unsigned entries=0;
+                used+=size_t(snprintf(line,sizeof(line),"Native reload trace title=%u:",i));
+                while (r.traceLogged!=head && entries<16 && used<sizeof(line)-48)
+                {
+                    const uint64_t e=r.trace[r.traceLogged%Runtime::kTrace].load(std::memory_order_relaxed);
+                    ++r.traceLogged;++entries;
+                    const unsigned kind=unsigned(e>>56),extra=unsigned((e>>32)&0xFFFFFF);const uint32_t value=uint32_t(e);
+                    int n=0;
+                    switch (kind)
+                    {
+                    case TraceAction: n=snprintf(line+used,sizeof(line)-used," A%u%s/slot%u",value,(extra&1)?"s":"",(extra>>8)&0xFF);break;
+                    case TracePlay: n=snprintf(line+used,sizeof(line)-used," P0x%X%s/slot%u",value,(extra&1)?"s":"",(extra>>8)&0xFF);break;
+                    case TraceState: n=snprintf(line+used,sizeof(line)-used," S%d/m%d%s",int32_t(value),int16_t(extra&0xFFFF),(extra&0x10000)?"*":"");break;
+                    case TraceDuration: n=snprintf(line+used,sizeof(line)-used," D0x%X/mode%u=%d",value,extra&0xF,int16_t((extra>>4)&0xFFFF));break;
+                    case TraceAuto: n=snprintf(line+used,sizeof(line)-used," U/m%d%s",int16_t(extra&0xFFFF),(extra&0x10000)?"a":"");break;
+                    default: n=snprintf(line+used,sizeof(line)-used," ?");break;
+                    }
+                    if (n>0) used=(std::min)(sizeof(line)-1,used+size_t(n));
+                }
+                LOG("%s",line);
+            }
         }
     }
 }

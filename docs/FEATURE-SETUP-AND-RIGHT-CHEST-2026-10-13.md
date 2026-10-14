@@ -114,3 +114,22 @@ grenade's controller while holding (+300 ms) and for 600 ms after a throw or
 put-back. `Game_GestureMeleeInput` latches a quiet hand, so it must settle
 below the threshold before it can strike. Contact ("true physical") melee is
 unchanged and still takes priority when selected.
+
+## Diagnostic: Halo 4 reload message trace
+
+Player report: after the charging-handle pull, Master Chief's reload animation
+still plays for about a second before the gun fires. The 19:33 Steam log
+(132e509) shows the Halo 4 policy installed (`disable-auto`, `skip-animation`,
+`shortened` all installed) and exactly one zeroed timer and one skipped
+playback per step-by-step finish (7 finishes, `timersShortened=7`,
+`animationsSkipped=7`). So the existing skip fires but does not cover what the
+player sees. H4EK names a staged reload (`reload_enter`,
+`reload_continue_empty/full`, `reload_exit`).
+
+The native reload hooks now record, for the local player's weapon only, each
+weapon message (`A<id>`, `s` = skipped), playback inside it (`P<animation>`),
+magazine state sets (`S<state>/m<magazine>`, `*` = timers zeroed), duration
+queries inside a message (`D<animation>/mode=result`) and reload requests
+(`U`, `a` = automatic caller). A lock-free 64-entry ring is logged as
+`Native reload trace title=<n>:` for 3 s after any magazine state change, so
+firing does not flood the log. Diagnostic only: no decision changed.
