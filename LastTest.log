@@ -1,0 +1,1960 @@
+Start testing: Oct 14 03:41 Coordinated Universal Time
+----------------------------------------------------------
+1/123 Testing: halo4_vehicle_identity
+1/123 Test: halo4_vehicle_identity
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo4_vehicle_identity_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo4_vehicle_identity" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 77 H4 persistent vehicle identity checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo4_vehicle_identity" end time: Oct 14 03:41 Coordinated Universal Time
+"halo4_vehicle_identity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/123 Testing: halo2_vehicle_identity
+2/123 Test: halo2_vehicle_identity
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo2_vehicle_identity_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo2_vehicle_identity" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 106 H2 persistent vehicle identity checks, 79 unique official models
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo2_vehicle_identity" end time: Oct 14 03:41 Coordinated Universal Time
+"halo2_vehicle_identity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/123 Testing: ce_dlss_camera
+3/123 Test: ce_dlss_camera
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/ce_dlss_camera_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"ce_dlss_camera" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 4 CE DLSS camera checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"ce_dlss_camera" end time: Oct 14 03:41 Coordinated Universal Time
+"ce_dlss_camera" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/123 Testing: ce_dlss_depth
+4/123 Test: ce_dlss_depth
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/ce_dlss_depth_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"ce_dlss_depth" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 24 CE DLSS depth lease checks
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"ce_dlss_depth" end time: Oct 14 03:41 Coordinated Universal Time
+"ce_dlss_depth" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/123 Testing: dual_reticle
+5/123 Test: dual_reticle
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/dual_reticle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"dual_reticle" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 30 dual reticle checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"dual_reticle" end time: Oct 14 03:41 Coordinated Universal Time
+"dual_reticle" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/123 Testing: dlss_contract
+6/123 Test: dlss_contract
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/dlss_contract_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"dlss_contract" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+DLSS failures: 0
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"dlss_contract" end time: Oct 14 03:41 Coordinated Universal Time
+"dlss_contract" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/123 Testing: subtitle_contract
+7/123 Test: subtitle_contract
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/subtitle_contract_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"subtitle_contract" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"subtitle_contract" end time: Oct 14 03:41 Coordinated Universal Time
+"subtitle_contract" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/123 Testing: native_subtitle_interface
+8/123 Test: native_subtitle_interface
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/native_subtitle_interface_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"native_subtitle_interface" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 114 native subtitle ABI, authority and queue checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"native_subtitle_interface" end time: Oct 14 03:41 Coordinated Universal Time
+"native_subtitle_interface" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/123 Testing: halomccvr_bloom_override_tests
+9/123 Test: halomccvr_bloom_override_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_bloom_override_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_bloom_override_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Bloom override: 55 checks passed (real WARP resources, no game install/launch).
+<end of output>
+Test time =   0.11 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_bloom_override_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_bloom_override_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/123 Testing: halomccvr_muzzle_suppression_tests
+10/123 Test: halomccvr_muzzle_suppression_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_muzzle_suppression_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_muzzle_suppression_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+2071 production muzzle suppression checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_muzzle_suppression_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_muzzle_suppression_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/123 Testing: halomccvr_hud_reveal_tests
+11/123 Test: halomccvr_hud_reveal_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_hud_reveal_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_hud_reveal_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+HUD reveal gesture and publication checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_hud_reveal_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_hud_reveal_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/123 Testing: body_visibility_switch
+12/123 Test: body_visibility_switch
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/body_visibility_switch_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"body_visibility_switch" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 44 body switch memory/lifecycle checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"body_visibility_switch" end time: Oct 14 03:41 Coordinated Universal Time
+"body_visibility_switch" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/123 Testing: halomccvr_halo4_arm_ik_tests
+13/123 Test: halomccvr_halo4_arm_ik_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_arm_ik_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_arm_ik_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 90 Halo 4 tracked-arm IK checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_arm_ik_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_arm_ik_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/123 Testing: finger_joint_identity
+14/123 Test: finger_joint_identity
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/finger_joint_identity_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"finger_joint_identity" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 1254 labeled finger-joint identity checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"finger_joint_identity" end time: Oct 14 03:41 Coordinated Universal Time
+"finger_joint_identity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/123 Testing: window_focus_policy
+15/123 Test: window_focus_policy
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/window_focus_policy_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"window_focus_policy" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 468 window focus policy checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"window_focus_policy" end time: Oct 14 03:41 Coordinated Universal Time
+"window_focus_policy" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/123 Testing: halomccvr_halo4_body_ik_tests
+16/123 Test: halomccvr_halo4_body_ik_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_body_ik_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_body_ik_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 210 Halo 4 full-body transform IK checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_body_ik_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_body_ik_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/123 Testing: reach_contact_backend
+17/123 Test: reach_contact_backend
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/reach_contact_backend_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"reach_contact_backend" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Reach native contact backend: 312 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"reach_contact_backend" end time: Oct 14 03:41 Coordinated Universal Time
+"reach_contact_backend" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/123 Testing: halo4_contact_backend
+18/123 Test: halo4_contact_backend
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo4_contact_backend_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo4_contact_backend" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+H4 native contact backend: 621 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo4_contact_backend" end time: Oct 14 03:41 Coordinated Universal Time
+"halo4_contact_backend" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/123 Testing: native_vr_actions_runtime
+19/123 Test: native_vr_actions_runtime
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/native_vr_actions_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"native_vr_actions_runtime" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+native VR action runtime: 257 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"native_vr_actions_runtime" end time: Oct 14 03:41 Coordinated Universal Time
+"native_vr_actions_runtime" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/123 Testing: halomccvr_physical_crouch_tests
+20/123 Test: halomccvr_physical_crouch_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_physical_crouch_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_physical_crouch_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Physical crouch: 227 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_physical_crouch_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_physical_crouch_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/123 Testing: halomccvr_physical_crouch_camera_tests
+21/123 Test: halomccvr_physical_crouch_camera_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_physical_crouch_camera_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_physical_crouch_camera_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Physical crouch camera: 186 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_physical_crouch_camera_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_physical_crouch_camera_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/123 Testing: halomccvr_dlss_sampler_tests
+22/123 Test: halomccvr_dlss_sampler_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_dlss_sampler_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_dlss_sampler_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+DLSS sampler cache: 1035 checks passed, 1014 native bindings, 6 cold factory calls
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_dlss_sampler_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_dlss_sampler_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/123 Testing: halomccvr_gesture_binding_reader_tests
+23/123 Test: halomccvr_gesture_binding_reader_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_gesture_binding_reader_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_gesture_binding_reader_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+31233 production native action binding checks passed across six titles
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_gesture_binding_reader_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_gesture_binding_reader_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/123 Testing: halomccvr_updater_archive_tests
+24/123 Test: halomccvr_updater_archive_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_updater_archive_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_updater_archive_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Updater archive extraction, traversal, absolute path, duplicate, reserved-name and symlink tests passed.
+<end of output>
+Test time =   2.86 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_updater_archive_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_updater_archive_tests" time elapsed: 00:00:02
+----------------------------------------------------------
+
+25/123 Testing: halomccvr_installer_tests
+25/123 Test: halomccvr_installer_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_installer_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_installer_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Installer policy, release parsing, detection, SHA-256, cfg merge, backup and rollback tests passed.
+<end of output>
+Test time =   0.46 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_installer_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_installer_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/123 Testing: halomccvr_vr_mapping_tests
+26/123 Test: halomccvr_vr_mapping_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_vr_mapping_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_vr_mapping_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+VR mappings: 750 checks passed
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_vr_mapping_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_vr_mapping_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/123 Testing: halomccvr_halo4_pause_lifetime_tests
+27/123 Test: halomccvr_halo4_pause_lifetime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_pause_lifetime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_pause_lifetime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+11 Halo 4 production pause lifetime checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_pause_lifetime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_pause_lifetime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/123 Testing: halomccvr_reach_hud_height_tests
+28/123 Test: halomccvr_reach_hud_height_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_reach_hud_height_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_reach_hud_height_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Reach production HUD height wrapper: 175 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_reach_hud_height_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_reach_hud_height_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/123 Testing: halomccvr_hook_lifecycle_tests
+29/123 Test: halomccvr_hook_lifecycle_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_hook_lifecycle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_hook_lifecycle_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_hook_lifecycle_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_hook_lifecycle_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+30/123 Testing: halomccvr_core_tests
+30/123 Test: halomccvr_core_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_core_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_core_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+HaloMCCVR core tests passed
+<end of output>
+Test time =   0.78 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_core_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_core_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/123 Testing: halomccvr_virtual_stock_tests
+31/123 Test: halomccvr_virtual_stock_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_virtual_stock_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_virtual_stock_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+6673 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_virtual_stock_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_virtual_stock_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/123 Testing: halomccvr_two_hand_lab_tests
+32/123 Test: halomccvr_two_hand_lab_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_two_hand_lab_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_two_hand_lab_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+1446 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_two_hand_lab_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_two_hand_lab_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+33/123 Testing: halomccvr_support_grip_logic_tests
+33/123 Test: halomccvr_support_grip_logic_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_support_grip_logic_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_support_grip_logic_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+support grip logic: 278 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_support_grip_logic_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_support_grip_logic_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+34/123 Testing: halomccvr_support_grab_tests
+34/123 Test: halomccvr_support_grab_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_support_grab_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_support_grab_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+69 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_support_grab_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_support_grab_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+35/123 Testing: halomccvr_halo4_owner_evidence_tests
+35/123 Test: halomccvr_halo4_owner_evidence_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_owner_evidence_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_owner_evidence_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+H4 owner evidence: 101 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_owner_evidence_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_owner_evidence_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+36/123 Testing: halomccvr_virtual_stock_aim_continuity_tests
+36/123 Test: halomccvr_virtual_stock_aim_continuity_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_virtual_stock_aim_continuity_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_virtual_stock_aim_continuity_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+370 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_virtual_stock_aim_continuity_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_virtual_stock_aim_continuity_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+37/123 Testing: halomccvr_virtual_stock_aim_tests
+37/123 Test: halomccvr_virtual_stock_aim_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_virtual_stock_aim_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_virtual_stock_aim_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+640 production aim combinations passed: legacy zero/off parity and missing-head fallback on donor modes 0-2, Hybrid A/B zero-strength and head-invalid endpoints, grip isolation, raw-position invariance; retired sway correction leaves a stale stored neutral byte-inert for Standard and Plus.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_virtual_stock_aim_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_virtual_stock_aim_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+38/123 Testing: halomccvr_virtual_stock_aim_continuity_live_tests
+38/123 Test: halomccvr_virtual_stock_aim_continuity_live_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_virtual_stock_aim_continuity_live_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_virtual_stock_aim_continuity_live_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+  Standard-Head: latch swing 20.642 deg
+  Standard-Shoulder: latch swing 19.3329 deg
+  Plus: latch swing 21.1881 deg
+  smoothing lag at completion: 0.244433 deg
+aim continuity live seam: Standard (rear 0/1) and Plus (rear 3) acquisition/release continuity, moving live target, rapid reversals, once-per-serial lifetime, invalidation, fail-open, solver isolation and smoothing-then-continuity composition passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_virtual_stock_aim_continuity_live_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_virtual_stock_aim_continuity_live_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+39/123 Testing: halomccvr_aim_continuity_lifecycle_guard
+39/123 Test: halomccvr_aim_continuity_lifecycle_guard
+Command: "C:/hostedtoolcache/windows/Python/3.12.10/x64/python3.exe" "-O" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/tools/check_aim_continuity_lifecycle.py" "--self-test"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_aim_continuity_lifecycle_guard" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+aim-continuity lifecycle guard passed: 10 InvalidateAimContinuityLayer( references and no routine-path reset in D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/src/dll/vr.cpp
+<end of output>
+Test time =   0.38 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_aim_continuity_lifecycle_guard" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_aim_continuity_lifecycle_guard" time elapsed: 00:00:00
+----------------------------------------------------------
+
+40/123 Testing: halomccvr_two_hand_lab_patch_guard
+40/123 Test: halomccvr_two_hand_lab_patch_guard
+Command: "C:/hostedtoolcache/windows/Python/3.12.10/x64/python3.exe" "-O" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/tools/check_two_hand_lab_patch.py" "--self-test"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_two_hand_lab_patch_guard" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+two-hand-lab patch guard passed: sidebar hide, no doorway, presets, reset, page wiring, header wiring, and suite registration clean under D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_two_hand_lab_patch_guard" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_two_hand_lab_patch_guard" time elapsed: 00:00:00
+----------------------------------------------------------
+
+41/123 Testing: halomccvr_persistent_support_grip_guard
+41/123 Test: halomccvr_persistent_support_grip_guard
+Command: "C:/hostedtoolcache/windows/Python/3.12.10/x64/python3.exe" "-O" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/tools/check_persistent_support_grip.py" "--self-test"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_persistent_support_grip_guard" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+persistent support grip guard passed: config default/parse/save, applicability gate, base latch stores, reseed/owner-break pair, donor-leftover, acquisition-gate, retained-steering, forcing-carry allowlist, CE prepare trust-source, weapon-switch-policy and default-switch crossing-requirement wiring clean under D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload
+<end of output>
+Test time =   0.40 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_persistent_support_grip_guard" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_persistent_support_grip_guard" time elapsed: 00:00:00
+----------------------------------------------------------
+
+42/123 Testing: halomccvr_haptics_runtime_tests
+42/123 Test: halomccvr_haptics_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_haptics_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_haptics_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Haptics production runtime: 603 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_haptics_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_haptics_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+43/123 Testing: halomccvr_dpad_input_tests
+43/123 Test: halomccvr_dpad_input_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_dpad_input_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_dpad_input_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+D-pad input: 593 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_dpad_input_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_dpad_input_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+44/123 Testing: halomccvr_native_vehicle_fp_tests
+44/123 Test: halomccvr_native_vehicle_fp_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_native_vehicle_fp_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_native_vehicle_fp_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+574 native vehicle first-person checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_native_vehicle_fp_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_native_vehicle_fp_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+45/123 Testing: halomccvr_odst_seat_lifetime_tests
+45/123 Test: halomccvr_odst_seat_lifetime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_odst_seat_lifetime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_odst_seat_lifetime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 74 production ODST seat lifetime checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_odst_seat_lifetime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_odst_seat_lifetime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+46/123 Testing: halomccvr_halo3_seat_lifetime_tests
+46/123 Test: halomccvr_halo3_seat_lifetime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo3_seat_lifetime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo3_seat_lifetime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 75 production Halo 3 seat lifetime checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo3_seat_lifetime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo3_seat_lifetime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+47/123 Testing: halomccvr_halo4_vehicle_input_tests
+47/123 Test: halomccvr_halo4_vehicle_input_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_vehicle_input_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_vehicle_input_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+H4 vehicle input: 30 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_vehicle_input_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_vehicle_input_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+48/123 Testing: halomccvr_native_reload_tests
+48/123 Test: halomccvr_native_reload_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_native_reload_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_native_reload_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+387819 native reload policy checks passed
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_native_reload_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_native_reload_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+49/123 Testing: halomccvr_weapon_interaction_tests
+49/123 Test: halomccvr_weapon_interaction_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_weapon_interaction_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_weapon_interaction_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Weapon interactions: 16085 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_weapon_interaction_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_weapon_interaction_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+50/123 Testing: halomccvr_realistic_reload_tests
+50/123 Test: halomccvr_realistic_reload_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_realistic_reload_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_realistic_reload_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Realistic reload: 277 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_realistic_reload_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_realistic_reload_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+51/123 Testing: halomccvr_grenade_gesture_tests
+51/123 Test: halomccvr_grenade_gesture_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_grenade_gesture_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_grenade_gesture_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Grenade gesture: 80 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_grenade_gesture_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_grenade_gesture_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+52/123 Testing: halomccvr_weapon_accessory_tests
+52/123 Test: halomccvr_weapon_accessory_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_weapon_accessory_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_weapon_accessory_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Weapon accessories: 34255 checks, 0 failures
+<end of output>
+Test time =   0.18 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_weapon_accessory_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_weapon_accessory_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+53/123 Testing: halomccvr_reload_identity_tests
+53/123 Test: halomccvr_reload_identity_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_reload_identity_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_reload_identity_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Native reload observers: 503 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_reload_identity_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_reload_identity_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+54/123 Testing: halomccvr_dpad_action_tests
+54/123 Test: halomccvr_dpad_action_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_dpad_action_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_dpad_action_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+D-pad OpenXR production action setup: 1200 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_dpad_action_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_dpad_action_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+55/123 Testing: halomccvr_grip_pose_capture_tests
+55/123 Test: halomccvr_grip_pose_capture_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_grip_pose_capture_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_grip_pose_capture_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Support grip capture fixture: 42 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_grip_pose_capture_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_grip_pose_capture_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+56/123 Testing: halomccvr_aim_pose_tests
+56/123 Test: halomccvr_aim_pose_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_aim_pose_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_aim_pose_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Production Hybrid aim-pose fixture: 301 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_aim_pose_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_aim_pose_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+57/123 Testing: halomccvr_committed_aim_sample_tests
+57/123 Test: halomccvr_committed_aim_sample_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_committed_aim_sample_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_committed_aim_sample_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Committed aim sample: 35 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_committed_aim_sample_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_committed_aim_sample_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+58/123 Testing: halomccvr_aim_servo_identity_tests
+58/123 Test: halomccvr_aim_servo_identity_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_aim_servo_identity_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_aim_servo_identity_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Aim-servo identity: 4 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_aim_servo_identity_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_aim_servo_identity_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+59/123 Testing: halomccvr_two_hand_lab_solver_tests
+59/123 Test: halomccvr_two_hand_lab_solver_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_two_hand_lab_solver_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_two_hand_lab_solver_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Two-Hand Lab tranche 2A solver integration: 65 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_two_hand_lab_solver_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_two_hand_lab_solver_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+60/123 Testing: halomccvr_two_hand_lab_temporal_tests
+60/123 Test: halomccvr_two_hand_lab_temporal_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_two_hand_lab_temporal_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_two_hand_lab_temporal_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+two_hand_lab_temporal: 386 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_two_hand_lab_temporal_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_two_hand_lab_temporal_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+61/123 Testing: halomccvr_telemetry_tests
+61/123 Test: halomccvr_telemetry_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_telemetry_tests.exe" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/generated/telemetry_recorder_test.jsonl"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_telemetry_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Telemetry recorder: 14120 checks, 0 failures, TelemetryFrame 2048 bytes, ring payload 8388608 bytes
+<end of output>
+Test time =   1.38 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_telemetry_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_telemetry_tests" time elapsed: 00:00:01
+----------------------------------------------------------
+
+62/123 Testing: halomccvr_telemetry_jsonl_tests
+62/123 Test: halomccvr_telemetry_jsonl_tests
+Command: "C:/hostedtoolcache/windows/Python/3.12.10/x64/python3.exe" "-O" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/tools/validate_telemetry_jsonl.py" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/generated/telemetry_recorder_test.jsonl" "--expect-fixture" "--self-test"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_telemetry_jsonl_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+valid telemetry JSONL (clean session)
+<end of output>
+Test time =   0.28 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_telemetry_jsonl_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_telemetry_jsonl_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+63/123 Testing: halomccvr_telemetry_analyser_smoke
+63/123 Test: halomccvr_telemetry_analyser_smoke
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_telemetry_tests.exe" "--analyser-smoke" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/generated/telemetry_analyser_smoke" "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/generated/telemetry_recorder_test.jsonl"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_telemetry_analyser_smoke" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Telemetry analyser smoke: canonical manifest, diagnostics and guide produced by 6.3.0-standalone (053cf61671be281551b89a459e0611490f29d0ffd00387b43668043793bae5b4)
+<end of output>
+Test time =   0.66 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_telemetry_analyser_smoke" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_telemetry_analyser_smoke" time elapsed: 00:00:00
+----------------------------------------------------------
+
+64/123 Testing: halomccvr_left_hand_h2_tests
+64/123 Test: halomccvr_left_hand_h2_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_left_hand_h2_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_left_hand_h2_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Halo 2 left-hand alignment: 1005 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_left_hand_h2_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_left_hand_h2_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+65/123 Testing: halomccvr_left_hand_shared_tests
+65/123 Test: halomccvr_left_hand_shared_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_left_hand_shared_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_left_hand_shared_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Shared left-hand alignment: 96 rig/scale/eye/support cases, 9657 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_left_hand_shared_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_left_hand_shared_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+66/123 Testing: halomccvr_ce_render_tests
+66/123 Test: halomccvr_ce_render_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_render_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_render_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_render_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_render_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+67/123 Testing: halomccvr_ce_view_pair_tests
+67/123 Test: halomccvr_ce_view_pair_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_view_pair_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_view_pair_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_view_pair_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_view_pair_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+68/123 Testing: halomccvr_ce_classic_view_pair_tests
+68/123 Test: halomccvr_ce_classic_view_pair_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_classic_view_pair_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_classic_view_pair_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_classic_view_pair_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_classic_view_pair_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+69/123 Testing: halomccvr_ce_first_person_tests
+69/123 Test: halomccvr_ce_first_person_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_first_person_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_first_person_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE first-person: independent wrists/gun, authored grip, reload parts, recenter/generation, and transaction guards passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_first_person_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_first_person_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+70/123 Testing: halomccvr_ce_contact_tests
+70/123 Test: halomccvr_ce_contact_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_contact_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_contact_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_contact_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_contact_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+71/123 Testing: halomccvr_ce_contact_runtime_tests
+71/123 Test: halomccvr_ce_contact_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_contact_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_contact_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: production CE contact native routing, toggles, hand latches, stale-frame rejection and SEH isolation
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_contact_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_contact_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+72/123 Testing: halomccvr_ce_bindings_tests
+72/123 Test: halomccvr_ce_bindings_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_bindings_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_bindings_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.99 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_bindings_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_bindings_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+73/123 Testing: halomccvr_ce_eye_cache_tests
+73/123 Test: halomccvr_ce_eye_cache_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_eye_cache_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_eye_cache_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_eye_cache_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_eye_cache_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+74/123 Testing: halomccvr_ce_desktop_mirror_tests
+74/123 Test: halomccvr_ce_desktop_mirror_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_desktop_mirror_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_desktop_mirror_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE desktop mirror production WARP checks passed
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_desktop_mirror_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_desktop_mirror_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+75/123 Testing: halomccvr_ce_runtime_tests
+75/123 Test: halomccvr_ce_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE tracking replacement: 0 transient disables
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+76/123 Testing: halomccvr_ce_classic_runtime_tests
+76/123 Test: halomccvr_ce_classic_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_classic_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_classic_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_classic_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_classic_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+77/123 Testing: halomccvr_ce_hud_tests
+77/123 Test: halomccvr_ce_hud_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_hud_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_hud_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_hud_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_hud_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+78/123 Testing: halomccvr_ce_hud_layout_tests
+78/123 Test: halomccvr_ce_hud_layout_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_hud_layout_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_hud_layout_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_hud_layout_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_hud_layout_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+79/123 Testing: halomccvr_ce_reticle_redirect_tests
+79/123 Test: halomccvr_ce_reticle_redirect_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_reticle_redirect_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_reticle_redirect_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_reticle_redirect_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_reticle_redirect_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+80/123 Testing: halomccvr_ce_reticle_pixels_tests
+80/123 Test: halomccvr_ce_reticle_pixels_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_reticle_pixels_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_reticle_pixels_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS_CE_NATIVE_RGB_UPLOAD: alpha=0 rgb=1780 visible=27536 antialias=2582
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_reticle_pixels_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_reticle_pixels_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+81/123 Testing: halomccvr_ce_hud_target_tests
+81/123 Test: halomccvr_ce_hud_target_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_hud_target_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_hud_target_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_hud_target_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_hud_target_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+82/123 Testing: halomccvr_ce_controls_tests
+82/123 Test: halomccvr_ce_controls_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_controls_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_controls_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE controls: native admission, shared snap transitions, smooth elapsed time, vehicle hull following, head-relative movement and stale rejection passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_controls_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_controls_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+83/123 Testing: halomccvr_ce_controls_runtime_tests
+83/123 Test: halomccvr_ce_controls_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_controls_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_controls_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_controls_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_controls_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+84/123 Testing: halomccvr_ce_comfort_tests
+84/123 Test: halomccvr_ce_comfort_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_comfort_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_comfort_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_comfort_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_comfort_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+85/123 Testing: halomccvr_ce_orientation_runtime_tests
+85/123 Test: halomccvr_ce_orientation_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_orientation_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_orientation_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE orientation production checks: 50 checks, PASS
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_orientation_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_orientation_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+86/123 Testing: halomccvr_ce_unit_control_runtime_tests
+86/123 Test: halomccvr_ce_unit_control_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_unit_control_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_unit_control_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE unit-control production checks: PASS
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_unit_control_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_unit_control_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+87/123 Testing: halomccvr_ce_network_input_tests
+87/123 Test: halomccvr_ce_network_input_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_network_input_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_network_input_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE network production/geometry checks: PASS
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_network_input_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_network_input_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+88/123 Testing: halomccvr_ce_first_person_runtime_tests
+88/123 Test: halomccvr_ce_first_person_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_first_person_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_first_person_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+CE concurrent material policy: 0 refused of 160000 unchanged-policy writes
+PASS: 3277 production CE muzzle checks (native services stubbed)
+PASS production CE first-person receipt: Classic/Anniversary projection, continuous controller targeting, isolated particles, visibility, recovery and fifteen-hook retirement
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_first_person_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_first_person_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+89/123 Testing: halomccvr_ce_muzzle_lifecycle_tests
+89/123 Test: halomccvr_ce_muzzle_lifecycle_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_ce_muzzle_lifecycle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_ce_muzzle_lifecycle_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 364 production CE muzzle lifecycle checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_ce_muzzle_lifecycle_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_ce_muzzle_lifecycle_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+90/123 Testing: halomccvr_reach_display_admission_tests
+90/123 Test: halomccvr_reach_display_admission_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_reach_display_admission_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_reach_display_admission_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Reach production display admission: 526 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_reach_display_admission_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_reach_display_admission_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+91/123 Testing: manual_vr_recovery
+91/123 Test: manual_vr_recovery
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/manual_vr_recovery_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"manual_vr_recovery" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"manual_vr_recovery" end time: Oct 14 03:41 Coordinated Universal Time
+"manual_vr_recovery" time elapsed: 00:00:00
+----------------------------------------------------------
+
+92/123 Testing: halomccvr_title_reentry_probe_tests
+92/123 Test: halomccvr_title_reentry_probe_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_title_reentry_probe_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_title_reentry_probe_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 706 production title reentry checks
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_title_reentry_probe_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_title_reentry_probe_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+93/123 Testing: halomccvr_halo2_anniversary_cleanup_tests
+93/123 Test: halomccvr_halo2_anniversary_cleanup_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo2_anniversary_cleanup_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo2_anniversary_cleanup_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 192 checks, 0 failures in production H2A cleanup/poll
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo2_anniversary_cleanup_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo2_anniversary_cleanup_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+94/123 Testing: halomccvr_halo2_observer_cleanup_tests
+94/123 Test: halomccvr_halo2_observer_cleanup_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo2_observer_cleanup_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo2_observer_cleanup_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 14480 Halo 2 production cleanup checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo2_observer_cleanup_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo2_observer_cleanup_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+95/123 Testing: halomccvr_hud_extra_draws_tests
+95/123 Test: halomccvr_hud_extra_draws_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_hud_extra_draws_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_hud_extra_draws_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 96 production HUD draw forwarding checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_hud_extra_draws_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_hud_extra_draws_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+96/123 Testing: halo3_avatar_logic
+96/123 Test: halo3_avatar_logic
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo3_avatar_logic_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo3_avatar_logic" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+H3 avatar logic: 2867 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo3_avatar_logic" end time: Oct 14 03:41 Coordinated Universal Time
+"halo3_avatar_logic" time elapsed: 00:00:00
+----------------------------------------------------------
+
+97/123 Testing: halo3_avatar_runtime
+97/123 Test: halo3_avatar_runtime
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo3_avatar_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo3_avatar_runtime" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+H3 avatar runtime: 45 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo3_avatar_runtime" end time: Oct 14 03:41 Coordinated Universal Time
+"halo3_avatar_runtime" time elapsed: 00:00:00
+----------------------------------------------------------
+
+98/123 Testing: odst_finger_pose
+98/123 Test: odst_finger_pose
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/odst_finger_pose_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"odst_finger_pose" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+ODST fingers: 810 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"odst_finger_pose" end time: Oct 14 03:41 Coordinated Universal Time
+"odst_finger_pose" time elapsed: 00:00:00
+----------------------------------------------------------
+
+99/123 Testing: halomccvr_halo3_weapon_haptics_tests
+99/123 Test: halomccvr_halo3_weapon_haptics_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo3_weapon_haptics_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo3_weapon_haptics_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo3_weapon_haptics_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo3_weapon_haptics_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+100/123 Testing: halomccvr_halo3_weapon_haptics_backend
+100/123 Test: halomccvr_halo3_weapon_haptics_backend
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo3_weapon_haptics_backend_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo3_weapon_haptics_backend" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Halo 3 production haptics backend: 31 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo3_weapon_haptics_backend" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo3_weapon_haptics_backend" time elapsed: 00:00:00
+----------------------------------------------------------
+
+101/123 Testing: halomccvr_halo3_collision_dispatch_tests
+101/123 Test: halomccvr_halo3_collision_dispatch_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo3_collision_dispatch_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo3_collision_dispatch_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 20 production collision dispatch checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo3_collision_dispatch_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo3_collision_dispatch_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+102/123 Testing: halomccvr_native_fault_probe_tests
+102/123 Test: halomccvr_native_fault_probe_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_native_fault_probe_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_native_fault_probe_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 11 native exception observation checks
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_native_fault_probe_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_native_fault_probe_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+103/123 Testing: halomccvr_halo3_independent_shots_tests
+103/123 Test: halomccvr_halo3_independent_shots_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo3_independent_shots_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo3_independent_shots_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 3066 production H3 independent shot checks (native services stubbed)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo3_independent_shots_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo3_independent_shots_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+104/123 Testing: halomccvr_halo2_independent_shots_tests
+104/123 Test: halomccvr_halo2_independent_shots_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo2_independent_shots_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo2_independent_shots_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 3107 production H2 independent shot checks (native services stubbed)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo2_independent_shots_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo2_independent_shots_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+105/123 Testing: halomccvr_halo2_haptic_runtime_tests
+105/123 Test: halomccvr_halo2_haptic_runtime_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo2_haptic_runtime_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo2_haptic_runtime_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+H2 production haptics: 57 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo2_haptic_runtime_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo2_haptic_runtime_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+106/123 Testing: halo4_weapon_haptics
+106/123 Test: halo4_weapon_haptics
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo4_weapon_haptics_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo4_weapon_haptics" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+111 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo4_weapon_haptics" end time: Oct 14 03:41 Coordinated Universal Time
+"halo4_weapon_haptics" time elapsed: 00:00:00
+----------------------------------------------------------
+
+107/123 Testing: reach_weapon_haptics_logic
+107/123 Test: reach_weapon_haptics_logic
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/reach_weapon_haptics_logic_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"reach_weapon_haptics_logic" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Reach weapon haptics logic checks: 22
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"reach_weapon_haptics_logic" end time: Oct 14 03:41 Coordinated Universal Time
+"reach_weapon_haptics_logic" time elapsed: 00:00:00
+----------------------------------------------------------
+
+108/123 Testing: halomccvr_reach_finger_pose_tests
+108/123 Test: halomccvr_reach_finger_pose_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_reach_finger_pose_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_reach_finger_pose_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+38 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_reach_finger_pose_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_reach_finger_pose_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+109/123 Testing: halo4_body_packet_backend_tests
+109/123 Test: halo4_body_packet_backend_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halo4_body_packet_backend_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halo4_body_packet_backend_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+18 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halo4_body_packet_backend_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halo4_body_packet_backend_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+110/123 Testing: odst_weapon_haptics
+110/123 Test: odst_weapon_haptics
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/odst_weapon_haptics_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"odst_weapon_haptics" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+118 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"odst_weapon_haptics" end time: Oct 14 03:41 Coordinated Universal Time
+"odst_weapon_haptics" time elapsed: 00:00:00
+----------------------------------------------------------
+
+111/123 Testing: halomccvr_weapon_muzzle_tests
+111/123 Test: halomccvr_weapon_muzzle_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_weapon_muzzle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_weapon_muzzle_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 609 authored muzzle transform and lifetime checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_weapon_muzzle_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_weapon_muzzle_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+112/123 Testing: halomccvr_odst_scope_tests
+112/123 Test: halomccvr_odst_scope_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_odst_scope_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_odst_scope_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 257 production ODST scope checks (native renderer stubbed)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_odst_scope_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_odst_scope_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+113/123 Testing: halomccvr_reach_scope_tests
+113/123 Test: halomccvr_reach_scope_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_reach_scope_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_reach_scope_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Reach scope: 899 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_reach_scope_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_reach_scope_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+114/123 Testing: halomccvr_halo4_scope_tests
+114/123 Test: halomccvr_halo4_scope_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_scope_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_scope_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Halo 4 scope: 3478 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_scope_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_scope_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+115/123 Testing: halomccvr_halo2_scope_tests
+115/123 Test: halomccvr_halo2_scope_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo2_scope_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo2_scope_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+Halo 2 scope: 226 checks passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo2_scope_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo2_scope_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+116/123 Testing: halomccvr_halo4_muzzle_tests
+116/123 Test: halomccvr_halo4_muzzle_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo4_muzzle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo4_muzzle_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 6012 production Halo4 muzzle checks (native services stubbed)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo4_muzzle_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo4_muzzle_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+117/123 Testing: halomccvr_visual_hand_offset_tests
+117/123 Test: halomccvr_visual_hand_offset_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_visual_hand_offset_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_visual_hand_offset_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 190 visual-hand production/config checks
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_visual_hand_offset_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_visual_hand_offset_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+118/123 Testing: halomccvr_vehicle_turn_tests
+118/123 Test: halomccvr_vehicle_turn_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_vehicle_turn_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_vehicle_turn_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 55 vehicle turn production/config checks
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_vehicle_turn_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_vehicle_turn_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+119/123 Testing: halomccvr_reach_muzzle_tests
+119/123 Test: halomccvr_reach_muzzle_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_reach_muzzle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_reach_muzzle_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 5384 production Reach muzzle checks (native services stubbed)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_reach_muzzle_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_reach_muzzle_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+120/123 Testing: halomccvr_odst_muzzle_tests
+120/123 Test: halomccvr_odst_muzzle_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_odst_muzzle_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_odst_muzzle_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 6240 production ODST muzzle checks (native services stubbed)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_odst_muzzle_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_odst_muzzle_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+121/123 Testing: halomccvr_halo3_muzzle_publication_tests
+121/123 Test: halomccvr_halo3_muzzle_publication_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_halo3_muzzle_publication_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_halo3_muzzle_publication_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS: 343 production H3 muzzle publication checks
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_halo3_muzzle_publication_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_halo3_muzzle_publication_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+122/123 Testing: halomccvr_menu_slider_tests
+122/123 Test: halomccvr_menu_slider_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_menu_slider_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_menu_slider_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+VR menu slider input tests passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_menu_slider_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_menu_slider_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+123/123 Testing: halomccvr_game_menu_pointer_tests
+123/123 Test: halomccvr_game_menu_pointer_tests
+Command: "D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release/Release/halomccvr_game_menu_pointer_tests.exe"
+Directory: D:/a/MCCVR-Halo-Build-Manual-Reload/MCCVR-Halo-Build-Manual-Reload/out/build/release
+"halomccvr_game_menu_pointer_tests" start time: Oct 14 03:41 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+158 checks, 0 failures
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"halomccvr_game_menu_pointer_tests" end time: Oct 14 03:41 Coordinated Universal Time
+"halomccvr_game_menu_pointer_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 14 03:41 Coordinated Universal Time
