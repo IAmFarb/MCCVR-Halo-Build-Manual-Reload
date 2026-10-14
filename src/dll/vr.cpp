@@ -9940,6 +9940,22 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
     std::atomic<unsigned> g_grenadeFreeThrows{0};
     // Gesture melee stays quiet for a controller until this time (left, right).
     std::atomic<uint64_t> g_meleeQuietUntilMs[2]{};
+    // Diagnostic snapshot requests (label 1 switch-before, 2 switch-after,
+    // 3 throw-before, 4 throw-after). Due time 0 = free slot.
+    struct GrenadeDiagnosticRequest { std::atomic<uint64_t> due{0}; std::atomic<unsigned> label{0}; };
+    GrenadeDiagnosticRequest g_grenadeDiagnostics[8];
+    void ScheduleGrenadeDiagnostic(unsigned label,uint64_t due) noexcept
+    {
+        for(auto& request:g_grenadeDiagnostics)
+        {
+            uint64_t expected=0;
+            if(request.due.load(std::memory_order_acquire)==0)
+            {
+                request.label.store(label,std::memory_order_relaxed);
+                if(request.due.compare_exchange_strong(expected,due,std::memory_order_acq_rel)) return;
+            }
+        }
+    }
     std::atomic<HRESULT> g_weaponAccessoryResult{S_FALSE};
     std::atomic<unsigned> g_weaponGestureGrabs{0},g_weaponReloadRequests{0},g_weaponSwapRequests{0};
     std::atomic<unsigned> g_authoredInsertionRequests{0},g_fallbackInsertionRequests{0};
@@ -14156,6 +14172,10 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                 if(grenade.switched) g_grenadeSwitches.fetch_add(1,std::memory_order_relaxed);
                 if(grenade.thrown) g_grenadeThrows.fetch_add(1,std::memory_order_relaxed);
                 if(grenade.thrown&&grenade.aimActive) g_grenadeFreeThrows.fetch_add(1,std::memory_order_relaxed);
+                if(sample.title==GameTitle::Halo4&&grenade.switched)
+                { ScheduleGrenadeDiagnostic(1,inputNow);ScheduleGrenadeDiagnostic(2,inputNow+600); }
+                if(sample.title==GameTitle::Halo4&&grenade.thrown)
+                { ScheduleGrenadeDiagnostic(3,inputNow);ScheduleGrenadeDiagnostic(4,inputNow+1500); }
                 const auto& d=grenade.aimDirection;
                 const float horizontal=std::sqrt(d.x*d.x+d.z*d.z);
                 if(grenade.aimActive&&g_config.weapon_grenade_free_throw&&weapon_interaction::Finite(d)&&
@@ -22364,6 +22384,28 @@ uint64_t VR_TakeAuthoredReticleFramingReasserts()
 {
     return g_authoredReticleFramingReasserts.exchange(
         0, std::memory_order_relaxed);
+}
+
+bool VR_GrenadeDiagnosticPending(uint64_t nowMs) noexcept
+{
+    for(const auto& request:g_grenadeDiagnostics)
+    {
+        const uint64_t due=request.due.load(std::memory_order_acquire);
+        if(due&&due<=nowMs) return true;
+    }
+    return false;
+}
+
+bool VR_TakeGrenadeDiagnostic(uint64_t nowMs,unsigned& label) noexcept
+{
+    for(auto& request:g_grenadeDiagnostics)
+    {
+        uint64_t due=request.due.load(std::memory_order_acquire);
+        if(!due||due>nowMs) continue;
+        label=request.label.load(std::memory_order_relaxed);
+        if(request.due.compare_exchange_strong(due,0,std::memory_order_acq_rel)) return true;
+    }
+    return false;
 }
 
 bool VR_MeleeGestureQuiet(bool leftController) noexcept

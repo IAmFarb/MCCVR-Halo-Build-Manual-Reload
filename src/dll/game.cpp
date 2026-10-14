@@ -43124,6 +43124,7 @@ namespace
                     notice==1?"enabled":notice==2?"original boolean values restored":
                     "guarded access failed; optional switch disabled, VR retained");
             VR_ReportWeaponInteractions(pollNow);
+            Halo4ReportGrenadeDiagnostic();
             NativeReloadPolicy_Poll();
             NativeSubtitles_Poll(activeLevelRunning);
             NativeVehicleFirstPerson_Poll();

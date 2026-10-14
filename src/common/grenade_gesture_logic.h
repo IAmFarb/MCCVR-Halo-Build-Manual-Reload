@@ -52,6 +52,7 @@ struct Sample
     float primaryGrip{}, supportGrip{};
     bool primaryBusy{}, supportBusy{}; // grip already claimed by another gesture
     bool a{}, b{}, x{}, y{};           // physical face buttons: A/B right, X/Y left
+    int grenadeType{-1};               // native selected grenade type, -1 unknown
 };
 
 struct Output
@@ -293,6 +294,6 @@ inline weapon_accessory::Presentation BuildPresentation(const Sample& s,const Se
         pose.orientation={0,std::sin(yaw*0.5f),0,std::cos(yaw*0.5f)};
         pose.position=chest;
     }
-    return {&weapon_model::kGrenadeTokenModel,pose,s.title,s.generation,s.space,s.now,identity};
+    return {weapon_model::GrenadeModel(s.title,s.grenadeType),pose,s.title,s.generation,s.space,s.now,identity};
 }
 } // namespace grenade_gesture

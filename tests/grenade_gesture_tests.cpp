@@ -4,6 +4,7 @@
 #include <iterator>
 #include <cmath>
 #include <limits>
+#include <cmath>
 
 using namespace grenade_gesture;
 unsigned checks{},failures{};
@@ -219,8 +220,31 @@ void FreeThrow()
     toggle.c.freeThrow=false;o=toggle.Step();Check(!o.aimActive,"turning free throw off releases the aim");
 }
 
+void RealGrenadeModels()
+{
+    using namespace weapon_model;
+    Check(kGrenadeModelCount==3,"Halo 4 frag, plasma and pulse meshes");
+    for(unsigned i=0;i<kGrenadeModelCount;++i)
+    {
+        const auto& m=kGrenadeModels[i];
+        Check(m.title==GameTitle::Halo4&&m.vertexCount&&m.vertexCount%3==0&&UsesGrenadeGeometry(&m)&&
+            !UsesTokenGeometry(&m),"real grenade record is a drawable Halo 4 mesh");
+        float size=0;for(int a=0;a<3;++a) size=std::fmax(size,m.maximum[a]-m.minimum[a]);
+        Check(size>0.05f&&size<0.4f,"grenade mesh is hand-sized in metres");
+    }
+    Check(GrenadeModel(GameTitle::Halo4,0)==&kGrenadeModels[0]&&GrenadeModel(GameTitle::Halo4,1)==&kGrenadeModels[1]&&
+        GrenadeModel(GameTitle::Halo4,2)==&kGrenadeModels[2],"Halo 4 type selects its own grenade");
+    Check(GrenadeModel(GameTitle::Halo4,-1)==&kGrenadeModels[0]&&GrenadeModel(GameTitle::Halo4,9)==&kGrenadeModels[0],
+        "unknown Halo 4 type shows the frag");
+    Check(GrenadeModel(GameTitle::Halo3,1)==&kGrenadeTokenModel,"other titles keep the token until exported");
+    Rig h4;h4.s.title=GameTitle::Halo4;h4.s.grenadeType=1;h4.Step();
+    const auto p=BuildPresentation(h4.s,h4.c,h4.last,0);
+    Check(p.model==&kGrenadeModels[1],"Halo 4 chest shows the carried type's model");
+}
+
 int main()
 {
+    RealGrenadeModels();
     ChestZoneAndGrab();SwitchTypes();Throwing();Cancelling();Presentation();RightChest();FreeThrow();
     std::printf("Grenade gesture: %u checks, %u failures\n",checks,failures);
     return failures?1:0;

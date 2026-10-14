@@ -103,6 +103,58 @@ void Halo4ContactTick(uint32_t unit,void* instance)
     g_halo4Contact.processing.store(false,std::memory_order_release);
 }
 
+// Diagnostic: the local player's unit bytes at chest-grenade switch/throw
+// moments, copied here on the engine thread and logged by the poll. Read only.
+struct Halo4GrenadeDiagnostic
+{
+    static constexpr size_t kBytes=0xC00;
+    std::atomic<unsigned> state{0}; // 0 free, 1 writing, 2 ready
+    unsigned label=0;
+    uint32_t unit=0;
+    size_t copied=0;
+    uint64_t atMs=0;
+    uint8_t bytes[kBytes]{};
+} g_halo4GrenadeDiagnostic;
+
+void Halo4GrenadeDiagnosticSample(uint32_t unit,const void* instance) noexcept
+{
+    const uint64_t now=GetTickCount64();
+    if(!instance||!VR_GrenadeDiagnosticPending(now)) return;
+    Halo4FirstPersonAccess fp{};
+    if(!Halo4ResolveFirstPerson(0,fp)||!fp.record||
+        *reinterpret_cast<const uint32_t*>(fp.record+kHalo4FirstPersonRecordUnitOffset)!=unit) return;
+    auto& d=g_halo4GrenadeDiagnostic;
+    unsigned expected=0;
+    if(!d.state.compare_exchange_strong(expected,1,std::memory_order_acq_rel)) return;
+    unsigned label=0;
+    if(!VR_TakeGrenadeDiagnostic(now,label)) { d.state.store(0,std::memory_order_release);return; }
+    d.label=label;d.unit=unit;d.atMs=now;d.copied=0;
+    const auto* source=static_cast<const uint8_t*>(instance);
+    for(size_t at=0;at<Halo4GrenadeDiagnostic::kBytes;at+=0x100)
+    {
+        __try { memcpy(d.bytes+at,source+at,0x100); d.copied=at+0x100; }
+        __except(EXCEPTION_EXECUTE_HANDLER) { break; }
+    }
+    d.state.store(2,std::memory_order_release);
+}
+
+void Halo4ReportGrenadeDiagnostic() noexcept
+{
+    auto& d=g_halo4GrenadeDiagnostic;
+    if(d.state.load(std::memory_order_acquire)!=2) return;
+    static const char* const labels[]{"?","switch-before","switch-after","throw-before","throw-after"};
+    LOG("Halo 4 grenade diagnostic %s unit=%08X at=%llu bytes=0x%zX (local unit datum, read only)",
+        labels[d.label<5?d.label:0],d.unit,static_cast<unsigned long long>(d.atMs),d.copied);
+    for(size_t at=0;at<d.copied;at+=64)
+    {
+        char line[64*2+16];size_t used=size_t(snprintf(line,sizeof(line),"%03zX:",at));
+        for(size_t n=0;n<64&&at+n<d.copied;++n)
+            used+=size_t(snprintf(line+used,sizeof(line)-used,"%02X",d.bytes[at+n]));
+        LOG("H4G %s",line);
+    }
+    d.state.store(0,std::memory_order_release);
+}
+
 __declspec(noinline) void __fastcall Halo4ContactUpdateDetour(void* instance)
 {
     g_halo4Contact.callbacks.fetch_add(1,std::memory_order_acq_rel);
@@ -119,6 +171,7 @@ __declspec(noinline) void __fastcall Halo4ContactUpdateDetour(void* instance)
         __except(EXCEPTION_EXECUTE_HANDLER) { unit=UINT32_MAX; }
         if(g_halo4Contact.updateOriginal) g_halo4Contact.updateOriginal(instance);
         if(unit!=UINT32_MAX) Halo4ContactTick(unit,instance);
+        if(unit!=UINT32_MAX) Halo4GrenadeDiagnosticSample(unit,instance);
     }
     __finally { g_halo4Contact.callbacks.fetch_sub(1,std::memory_order_acq_rel); }
 }

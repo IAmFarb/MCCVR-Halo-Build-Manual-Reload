@@ -285,6 +285,30 @@ int main(int argc,char** argv)
         Check(SUCCEEDED(renderer.DrawMany(device.Get(),context.Get(),target.Get(),size,size,viewport,items,&constants,1,
             &second,{true,false}))&&second,"second eye draws from the shared sample");
     }
+    for(unsigned g=0;g<weapon_model::kGrenadeModelCount;++g)
+    {
+        // Real Halo 4 grenades draw from their own mesh and texture slices.
+        weapon_accessory::Presentation p{};p.model=&weapon_model::kGrenadeModels[g];p.pose.position={0,0,-.50f};
+        weapon_accessory::Constants constants{};
+        Check(weapon_accessory::Projection(p,{},-.55f,.55f,-.55f,.55f,constants),"grenade projection");
+        const float clear[]{0,0,0,1};context->ClearRenderTargetView(target.Get(),clear);
+        ComPtr<ID3D11CommandList> staged;
+        Check(SUCCEEDED(renderer.Draw(device.Get(),context.Get(),target.Get(),size,size,viewport,p,constants,&staged))&&staged,
+            "real grenade mesh records a draw");
+        if(!staged) continue;
+        context->ExecuteCommandList(staged.Get(),TRUE);
+        context->CopyResource(readback.Get(),texture.Get());
+        D3D11_MAPPED_SUBRESOURCE mapped{};hr=context->Map(readback.Get(),0,D3D11_MAP_READ,0,&mapped);
+        Check(SUCCEEDED(hr),"map grenade image");if(FAILED(hr)) return 1;
+        unsigned pixels=0;
+        for(unsigned y=0;y<size;++y) for(unsigned x=0;x<size;++x)
+        {
+            const auto* pixel=static_cast<const unsigned char*>(mapped.pData)+y*mapped.RowPitch+x*4;
+            if(pixel[0]||pixel[1]||pixel[2]) ++pixels;
+        }
+        context->Unmap(readback.Get(),0);
+        Check(pixels>200,"each real grenade covers visible pixels");
+    }
     renderer.Reset();
     for(unsigned title=1;title<=6;++title)
         Check(texturedColor[title]>10,"every title samples authored weapon colors instead of a flat neutral material");

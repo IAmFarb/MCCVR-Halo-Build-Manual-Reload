@@ -2,6 +2,7 @@
 #include "../common/weapon_magazines.generated.h"
 #include "../common/weapon_generic_magazine.h"
 #include "../common/weapon_surfaces.generated.h"
+#include "../common/weapon_grenade_meshes.generated.h"
 #include <d3dcompiler.h>
 #include <algorithm>
 #include <cmath>
@@ -14,10 +15,12 @@ constexpr char shader[]=R"(
 cbuffer Transform : register(b0) { float4 objectQ,objectP,eyeQ,eyeP,tangents,color; };
 Texture2D surface : register(t0);
 Texture2DArray scene : register(t1);
+Texture2DArray grenades : register(t2);
 SamplerState surfaceSampler : register(s0);
+SamplerState wrapSampler : register(s1);
 float3 rotate(float4 q,float3 p) { return p+2*cross(q.xyz,cross(q.xyz,p)+q.w*p); }
 struct V { float3 p:POSITION; float3 n:NORMAL; float2 uv:TEXCOORD; };
-struct O { float4 p:SV_Position; float3 n:NORMAL; float2 uv:TEXCOORD; };
+struct O { float4 p:SV_Position; float3 n:NORMAL; float2 uv:TEXCOORD; nointerpolation float kind:KIND; };
 O vs_main(V v) {
     O o;
     float3 p=rotate(eyeQ,rotate(objectQ,v.p)+objectP.xyz-eyeP.xyz);
@@ -25,11 +28,18 @@ O vs_main(V v) {
     o.p=float4((2*p.x-(tangents.y+tangents.x)*z)/(tangents.y-tangents.x),
         (2*p.y-(tangents.w+tangents.z)*z)/(tangents.w-tangents.z),
         (20.0*z-0.02*20.0)/(20.0-0.02),z);
-    o.n=rotate(objectQ,v.n);o.uv=v.uv;return o;
+    o.n=rotate(objectQ,v.n);o.uv=v.uv;o.kind=objectP.w;return o;
 }
 float4 ps_main(O i):SV_Target {
     float diffuse=abs(dot(normalize(i.n),normalize(float3(-0.3,0.8,0.5))));
-    float3 albedo=surface.Sample(surfaceSampler,i.uv).rgb*color.xyz;
+    float3 albedo;
+    // objectP.w 1 = real grenade mesh: u carries the texture slice (+100
+    // per slice) and the authored UVs repeat.
+    if(i.kind>0.5) {
+        float slice=floor(i.uv.x/100.0+0.0001);
+        albedo=grenades.Sample(wrapSampler,float3(i.uv.x-slice*100.0,i.uv.y,slice)).rgb*color.xyz;
+    }
+    else albedo=surface.Sample(surfaceSampler,i.uv).rgb*color.xyz;
     // color.w: 0 = fixed lighting; else scene slice+1, +0.5 when the target
     // view is linear (sRGB or float: samples and writes are linear there).
     if(color.w<0.75) return float4(albedo*(0.35+0.65*diffuse),1);
@@ -52,7 +62,8 @@ void WeaponAccessoryRenderer::Reset() noexcept
 {
     if(context_) context_->ClearState();
     depth_.Reset();depthState_.Reset();raster_.Reset();constants_.Reset();vertices_.Reset();genericVertices_.Reset();
-    surface_.Reset();sampler_.Reset();sceneView_.Reset();scene_.Reset();
+    surface_.Reset();sampler_.Reset();wrapSampler_.Reset();grenadeSurface_.Reset();grenadeVertices_.Reset();
+    sceneView_.Reset();scene_.Reset();
     sceneResourceFormat_=sceneViewFormat_=DXGI_FORMAT_UNKNOWN;sceneUnsupported_=false;
     for(auto& captured:sceneCaptured_) captured=false;
     layout_.Reset();ps_.Reset();vs_.Reset();context_.Reset();device_.Reset();
@@ -92,12 +103,32 @@ HRESULT WeaponAccessoryRenderer::Prepare(ID3D11Device* device,unsigned width,uns
         sampler.AddressU=sampler.AddressV=sampler.AddressW=D3D11_TEXTURE_ADDRESS_CLAMP;
         sampler.MaxLOD=D3D11_FLOAT32_MAX;sampler.ComparisonFunc=D3D11_COMPARISON_NEVER;
         if(SUCCEEDED(hr)) hr=device->CreateSamplerState(&sampler,&sampler_);
+        sampler.AddressU=sampler.AddressV=D3D11_TEXTURE_ADDRESS_WRAP;
+        if(SUCCEEDED(hr)) hr=device->CreateSamplerState(&sampler,&wrapSampler_);
+        {
+            // Real grenade textures: BC1 slices, each a full 256x256 square.
+            D3D11_TEXTURE2D_DESC grenade{};
+            grenade.Width=grenade.Height=weapon_model::kGrenadeSurfaceSize;
+            grenade.MipLevels=1;grenade.ArraySize=weapon_model::kGrenadeSurfaceSlices;grenade.SampleDesc.Count=1;
+            grenade.Format=DXGI_FORMAT_BC1_UNORM;grenade.Usage=D3D11_USAGE_IMMUTABLE;
+            grenade.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+            constexpr unsigned sliceBytes=weapon_model::kGrenadeSurfaceSize*weapon_model::kGrenadeSurfaceSize/2;
+            static_assert(sizeof(weapon_model::kGrenadeSurfaceBlocks)==sliceBytes*weapon_model::kGrenadeSurfaceSlices);
+            D3D11_SUBRESOURCE_DATA slices[weapon_model::kGrenadeSurfaceSlices]{};
+            for(unsigned n=0;n<weapon_model::kGrenadeSurfaceSlices;++n)
+                slices[n]={weapon_model::kGrenadeSurfaceBlocks+n*sliceBytes,weapon_model::kGrenadeSurfaceSize*2,sliceBytes};
+            Ptr<ID3D11Texture2D> grenadeTexture;
+            if(SUCCEEDED(hr)) hr=device->CreateTexture2D(&grenade,slices,&grenadeTexture);
+            if(SUCCEEDED(hr)) hr=device->CreateShaderResourceView(grenadeTexture.Get(),nullptr,&grenadeSurface_);
+        }
         D3D11_BUFFER_DESC buffer{};buffer.ByteWidth=sizeof(weapon_model::kVertices);
         buffer.Usage=D3D11_USAGE_IMMUTABLE;buffer.BindFlags=D3D11_BIND_VERTEX_BUFFER;
         D3D11_SUBRESOURCE_DATA data{weapon_model::kVertices};
         if(SUCCEEDED(hr)) hr=device->CreateBuffer(&buffer,&data,&vertices_);
         buffer.ByteWidth=sizeof(weapon_model::kGenericVertices);data.pSysMem=weapon_model::kGenericVertices;
         if(SUCCEEDED(hr)) hr=device->CreateBuffer(&buffer,&data,&genericVertices_);
+        buffer.ByteWidth=sizeof(weapon_model::kGrenadeVertices);data.pSysMem=weapon_model::kGrenadeVertices;
+        if(SUCCEEDED(hr)) hr=device->CreateBuffer(&buffer,&data,&grenadeVertices_);
         buffer.ByteWidth=sizeof(weapon_accessory::Constants);buffer.Usage=D3D11_USAGE_DYNAMIC;
         buffer.BindFlags=D3D11_BIND_CONSTANT_BUFFER;buffer.CPUAccessFlags=D3D11_CPU_ACCESS_WRITE;
         if(SUCCEEDED(hr)) hr=device->CreateBuffer(&buffer,nullptr,&constants_);
@@ -191,7 +222,8 @@ bool ScreenCentre(const weapon_accessory::Constants& c,const D3D11_VIEWPORT& vie
 bool Drawable(const weapon_model::Model* model) noexcept
 {
     const bool generic=weapon_model::UsesTokenGeometry(model);
-    const size_t available=generic?std::size(weapon_model::kGenericVertices):std::size(weapon_model::kVertices);
+    const size_t available=generic?std::size(weapon_model::kGenericVertices):
+        weapon_model::UsesGrenadeGeometry(model)?std::size(weapon_model::kGrenadeVertices):std::size(weapon_model::kVertices);
     return model&&model->vertexCount&&model->firstVertex<=available&&
         model->vertexCount<=available-model->firstVertex&&model->vertexCount%3==0;
 }
@@ -261,6 +293,8 @@ HRESULT WeaponAccessoryRenderer::DrawMany(ID3D11Device* device,ID3D11DeviceConte
     context_->PSSetShaderResources(0,1,&surface);context_->PSSetSamplers(0,1,&sampler);
     ID3D11ShaderResourceView* sceneView=scene?sceneView_.Get():nullptr;
     context_->PSSetShaderResources(1,1,&sceneView);
+    ID3D11ShaderResourceView* grenadeSurface=grenadeSurface_.Get();ID3D11SamplerState* wrap=wrapSampler_.Get();
+    context_->PSSetShaderResources(2,1,&grenadeSurface);context_->PSSetSamplers(1,1,&wrap);
     context_->VSSetShader(vs_.Get(),nullptr,0);context_->PSSetShader(ps_.Get(),nullptr,0);
     for(unsigned i=0;i<count&&SUCCEEDED(hr);++i)
     {
@@ -272,8 +306,10 @@ HRESULT WeaponAccessoryRenderer::DrawMany(ID3D11Device* device,ID3D11DeviceConte
         if(FAILED(hr)) break;
         weapon_accessory::Constants itemConstants=constants[i];
         itemConstants.color[3]=scene&&sceneUsable[i]?float(i+1)+(linearView?0.5f:0.0f):0.0f;
+        itemConstants.objectP[3]=weapon_model::UsesGrenadeGeometry(model)?1.0f:0.0f;
         std::memcpy(mapped.pData,&itemConstants,sizeof(itemConstants));context_->Unmap(constants_.Get(),0);
-        ID3D11Buffer* vertex=weapon_model::UsesTokenGeometry(model)?genericVertices_.Get():vertices_.Get();
+        ID3D11Buffer* vertex=weapon_model::UsesTokenGeometry(model)?genericVertices_.Get():
+            weapon_model::UsesGrenadeGeometry(model)?grenadeVertices_.Get():vertices_.Get();
         context_->IASetVertexBuffers(0,1,&vertex,&stride,&offset);
         context_->Draw(model->vertexCount,model->firstVertex);
     }

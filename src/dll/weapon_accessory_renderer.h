@@ -40,12 +40,13 @@ private:
     Ptr<ID3D11VertexShader> vs_;
     Ptr<ID3D11PixelShader> ps_;
     Ptr<ID3D11InputLayout> layout_;
-    Ptr<ID3D11Buffer> vertices_,genericVertices_,constants_;
+    Ptr<ID3D11Buffer> vertices_,genericVertices_,grenadeVertices_,constants_;
     Ptr<ID3D11RasterizerState> raster_;
     Ptr<ID3D11DepthStencilState> depthState_;
     Ptr<ID3D11DepthStencilView> depth_;
     Ptr<ID3D11ShaderResourceView> surface_;
-    Ptr<ID3D11SamplerState> sampler_;
+    Ptr<ID3D11SamplerState> sampler_,wrapSampler_;
+    Ptr<ID3D11ShaderResourceView> grenadeSurface_;
     Ptr<ID3D11Texture2D> scene_;
     Ptr<ID3D11ShaderResourceView> sceneView_;
     DXGI_FORMAT sceneResourceFormat_{},sceneViewFormat_{};

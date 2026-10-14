@@ -34,8 +34,22 @@ inline bool UsesTokenGeometry(const Model* model) noexcept
 }
 }
 #include "weapon_models.generated.h"
+#include "weapon_grenade_models.generated.h"
 namespace weapon_model
 {
+// Real H4EK grenade meshes (kGrenadeVertices, own texture slices).
+inline bool UsesGrenadeGeometry(const Model* model) noexcept
+{
+    return model>=kGrenadeModels && model<kGrenadeModels+kGrenadeModelCount;
+}
+// The chest grenade for a title and native grenade type (0 frag, 1 plasma,
+// 2 pulse in Halo 4). Unknown type shows the first; other titles keep the
+// mod-authored token until their own kit models are exported.
+inline const Model* GrenadeModel(GameTitle title,int type) noexcept
+{
+    if(title!=GameTitle::Halo4) return &kGrenadeTokenModel;
+    return &kGrenadeModels[type>=0&&type<int(kGrenadeModelCount)?type:0];
+}
 inline const Model* Find(GameTitle title,uint64_t identity) noexcept
 {
     if(!identity) return nullptr;

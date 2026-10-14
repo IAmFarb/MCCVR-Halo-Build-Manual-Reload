@@ -1,0 +1,60 @@
+{
+  "models": [
+    {
+      "kind": "frag",
+      "tag": "storm_frag_grenade",
+      "checksum": "100A0F16",
+      "first": 0,
+      "vertices": 5928
+    },
+    {
+      "kind": "plasma",
+      "tag": "storm_plasma_grenade",
+      "checksum": "14041E06",
+      "first": 5928,
+      "vertices": 4170
+    },
+    {
+      "kind": "pulse",
+      "tag": "storm_energy_drain_grenade",
+      "checksum": "16191908",
+      "first": 10098,
+      "vertices": 468
+    }
+  ],
+  "slices": [
+    {
+      "grenade": "storm_frag_grenade",
+      "material": "storm_frag_grenade_metal_default",
+      "texture": "storm_frag_grenade_default_diff-storm_frag_grenade_default_diff_00_00.tga",
+      "texture_sha256": "cb98059ad96a36cea254eed20381596c53e021565dffe4cf02c36626c7d3d425",
+      "slice": 0,
+      "role": "frag"
+    },
+    {
+      "grenade": "storm_plasma_grenade",
+      "material": "storm_plasma_grenade_default",
+      "texture": "storm_plasma_default_diff-storm_plasma_default_diff_00_00.tga",
+      "texture_sha256": "89f56492c2c3a01c88072ec7630a45def037c8ea3240e5acf4ac9fcc0a2188b2",
+      "slice": 1,
+      "role": "plasma"
+    },
+    {
+      "grenade": "storm_plasma_grenade",
+      "material": "storm_plasma_grenade_illum",
+      "texture": "storm_plasma_default_diff-storm_plasma_default_diff_00_00.tga",
+      "texture_sha256": "89f56492c2c3a01c88072ec7630a45def037c8ea3240e5acf4ac9fcc0a2188b2",
+      "slice": 2,
+      "role": "plasma_glow"
+    },
+    {
+      "grenade": "storm_energy_drain_grenade",
+      "material": "storm_disruption_grenade_blinn",
+      "texture": "storm_disruption_grenade_diff-storm_disruption_grenade_diff_00_00.tga",
+      "texture_sha256": "b286e8a7e0fe089ee1fa7e4d72d7df1ac1af3497fff932a308c79b11181119f2",
+      "slice": 3,
+      "role": "pulse"
+    }
+  ],
+  "bc1_sha256": "f226f03c6115a108b05759a47e6ed36f15504b2e6f70dd2cfb5d8ad3ff63ebd4"
+}

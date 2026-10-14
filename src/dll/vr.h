@@ -738,6 +738,11 @@ bool VR_GetPhysicalMeleeSpeed(bool left,float& speed);
 // or handle, or a chest grenade (and briefly after a throw), so those fast
 // hand motions are not also read as a gesture melee swing. Lock-free.
 bool VR_MeleeGestureQuiet(bool leftController) noexcept;
+// Diagnostic: chest-grenade switch/throw moments at which the engine thread
+// should snapshot the local player's unit (to find the native grenade type
+// and counts). Pending is a cheap check; Take consumes one due request.
+bool VR_GrenadeDiagnosticPending(uint64_t nowMs) noexcept;
+bool VR_TakeGrenadeDiagnostic(uint64_t nowMs,unsigned& label) noexcept;
 // Called only from Halo's already-validated class-2 CHUD path. The active
 // weapon reticle is redirected into the controller-ray quad texture instead
 // of being drawn at the center of either VR eye.
