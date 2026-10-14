@@ -1,0 +1,48 @@
+# Builds, tests and packages the mod on a GitHub-hosted Windows machine, using
+# the project's own packaging script (no -Install: nothing touches a game).
+# Download the result from the run's "Artifacts" section.
+name: Build mod
+
+on:
+  push:
+    branches: [step-by-step-reload]
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: windows-2022
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The packaging script checks ancestry against an accepted commit.
+          fetch-depth: 0
+          lfs: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build, test and package
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools/package-candidate.ps1
+
+      - name: Upload mod packages
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Halo-MCC-VR-step-reload-and-grenades
+          path: |
+            out/candidates/*.zip
+            out/candidates/*SHA256.txt
+          if-no-files-found: error
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            out/build/release/CMakeFiles/*.log
+            out/build/release/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
