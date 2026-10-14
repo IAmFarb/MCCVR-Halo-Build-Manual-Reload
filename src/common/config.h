@@ -909,6 +909,9 @@ struct Config
     // for right-handed play; left-handed mode mirrors it). Negative = other side.
     float weapon_grenade_chest_side_m = 0.10f;
     float weapon_grenade_throw_speed_mps = 1.5f;
+    // Free throw: Halo's aim follows the arm's throw while the grenade leaves
+    // the hand (aim-steered titles), instead of the gun's aim.
+    bool weapon_grenade_free_throw = true;
     // Legacy (non-VR-mapping) MCC buttons, same index list as above: LT, LB.
     int weapon_grenade_button[6]{6,6,6,6,6,6};
     int weapon_grenade_switch_button[6]{2,2,2,2,2,2};

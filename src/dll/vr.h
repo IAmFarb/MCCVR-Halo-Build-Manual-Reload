@@ -718,6 +718,10 @@ uint64_t VR_TakeAuthoredReticleFramingReasserts();
 // is a quaternion (x,y,z,w), position is meters (x,y,z). Returns false until a
 // valid pose has been read. Thread-safe; the game camera hook (M1) reads this.
 bool VR_GetHeadPose(float outQuat[4], float outPos[3]);
+// Chest grenade free throw: while a thrown grenade is leaving the hand, the
+// unit direction (OpenXR local space) Halo's aim should follow. False when no
+// throw is steering. Lock-free, allocation-free; safe from the aim hooks.
+bool VR_GetGrenadeThrowAim(float outDirection[3]) noexcept;
 // Latest right-controller aim pose in the same OpenXR local space as the head.
 // This is tracking only; weapon/projectile application is performed by M3 game hooks.
 bool VR_GetRightControllerPose(float outQuat[4], float outPos[3]);

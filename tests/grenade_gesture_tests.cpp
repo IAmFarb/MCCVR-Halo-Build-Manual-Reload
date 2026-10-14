@@ -181,9 +181,47 @@ void RightChest()
         "the chest grenade model is drawn on the right chest");
 }
 
+void FreeThrow()
+{
+    // Lob up and to the right: Halo's aim follows the arm before the press.
+    Rig rig;rig.GrabSupport();
+    const float n=std::sqrt(0.6f*0.6f+0.5f*0.5f+0.62f*0.62f);
+    const Vec lob{0.6f/n,0.5f/n,-0.62f/n};
+    auto o=rig.Throw(true,lob,3.0f);
+    Check(o.thrown&&o.aimActive,"a throw steers the aim at once");
+    Check(Near(o.aimDirection,lob,0.02f)&&std::fabs(Dot(o.aimDirection,o.aimDirection)-1)<1e-3f,
+        "aim direction is the unit throw direction");
+    Check(!o.buttons,"the native press waits for the aim to turn");
+    const uint64_t released=rig.s.now;
+    uint64_t pressed=0;
+    for(int i=0;i<60&&!pressed;++i) { o=rig.Step(); if(o.buttons==kThrow) pressed=rig.s.now; Check(o.aimActive,"aim held until the press"); }
+    Check(pressed&&pressed-released>=kThrowAimLeadMs&&pressed-released<=kThrowAimLeadMs+30,
+        "press follows the lead time");
+    bool held=true;
+    while(rig.s.now<pressed+kThrowAimHoldMs-20) held=rig.Step().aimActive&&held;
+    Check(held,"aim stays on the throw through Halo's throw animation");
+    for(int i=0;i<10;++i) o=rig.Step();
+    Check(!o.aimActive,"aim returns to the hand afterwards");
+    // Off: Halo throws along the gun's aim, with no lead.
+    Rig off;off.c.freeThrow=false;off.GrabSupport();
+    o=off.Throw(true,{0,0,-1},3.0f);
+    Check(o.thrown&&!o.aimActive&&(o.buttons==kThrow||off.Step().buttons==kThrow),"free throw off: immediate press, gun aim");
+    // A slow put-back never steers.
+    Rig back;back.GrabSupport();o=back.Throw(true,{0,0,-1},0.5f);
+    Check(o.putBack&&!o.aimActive,"putting it back leaves the aim alone");
+    // Leaving gameplay before the press drops both the throw and the aim.
+    Rig cut;cut.GrabSupport();o=cut.Throw(true,{0,0,-1},3.0f);
+    cut.s.ready=false;o=cut.Step();
+    Check(!o.aimActive&&!o.buttons,"pause cancels the pending throw and aim");
+    cut.s.ready=true;Check(!cut.NextPulse(),"no late throw after a pause");
+    // Switching free throw off mid-throw returns the aim at once.
+    Rig toggle;toggle.GrabSupport();toggle.Throw(true,{0,0,-1},3.0f);
+    toggle.c.freeThrow=false;o=toggle.Step();Check(!o.aimActive,"turning free throw off releases the aim");
+}
+
 int main()
 {
-    ChestZoneAndGrab();SwitchTypes();Throwing();Cancelling();Presentation();RightChest();
+    ChestZoneAndGrab();SwitchTypes();Throwing();Cancelling();Presentation();RightChest();FreeThrow();
     std::printf("Grenade gesture: %u checks, %u failures\n",checks,failures);
     return failures?1:0;
 }

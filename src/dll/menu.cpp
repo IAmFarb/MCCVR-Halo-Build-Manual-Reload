@@ -1285,9 +1285,16 @@ namespace
         {
             ImGui::TextDisabled("A grenade sits on your chest on the weapon-hand side (right chest\n"
                 "when right-handed). Squeeze grip on it with either hand to take it.\n"
-                "While holding it, A or B (right hand) / X or Y (left hand) switch grenade type.\n"
-                "Let go while throwing forward to throw; let go slowly to put it back.\n"
-                "Halo still decides grenade count, type and where it flies (your aim).");
+                "While holding it, A or B (right hand) / X or Y (left hand) switch to the\n"
+                "next grenade type you carry. Let go while throwing to throw; let go\n"
+                "slowly to put it back. Halo still decides count, type and throw strength.");
+            changed |= ImGui::Checkbox("Free throw (grenade goes where you throw it)",
+                &g_config.weapon_grenade_free_throw);
+            if(g_config.weapon_grenade_free_throw)
+                ImGui::TextDisabled("Halo's aim briefly follows your arm as you let go, so lobs, side\n"
+                    "throws and high arcs go that way (Halo 3, ODST, Reach, Halo 4; other\n"
+                    "games may still throw along the gun's aim). The throw starts a\n"
+                    "fraction of a second after release while the aim turns.");
             changed |= vr_menu::SliderFloat("Chest depth below head (m)",
                 &g_config.weapon_grenade_chest_down_m,0.15f,0.60f,"%.2f");
             changed |= vr_menu::SliderFloat("Grenade side (m, + = weapon-hand side)",

@@ -9934,6 +9934,10 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
     }
     }
     std::atomic<unsigned> g_stepReloadBlockers{gesture_block::Off},g_grenadeBlockers{gesture_block::Off};
+    // Free throw direction as yaw/pitch bits, valid for its space epoch until
+    // the input thread stops renewing it (a stalled input frame expires it).
+    std::atomic<uint64_t> g_grenadeAimAngles{0},g_grenadeAimSpace{0},g_grenadeAimUntilMs{0};
+    std::atomic<unsigned> g_grenadeFreeThrows{0};
     std::atomic<HRESULT> g_weaponAccessoryResult{S_FALSE};
     std::atomic<unsigned> g_weaponGestureGrabs{0},g_weaponReloadRequests{0},g_weaponSwapRequests{0};
     std::atomic<unsigned> g_authoredInsertionRequests{0},g_fallbackInsertionRequests{0};
@@ -14127,6 +14131,7 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                 grenadeSettings.chestDown=g_config.weapon_grenade_chest_down_m;
                 grenadeSettings.chestSide=g_config.weapon_grenade_chest_side_m;
                 grenadeSettings.throwSpeed=g_config.weapon_grenade_throw_speed_mps;
+                grenadeSettings.freeThrow=g_config.weapon_grenade_free_throw;
                 grenadeSettings.throwButton=GrenadeGestureBinding(sample.title,vr_mapping::Grenade,inputNow);
                 grenadeSettings.switchButton=GrenadeGestureBinding(sample.title,vr_mapping::SwitchGrenade,inputNow);
                 grenade=g_grenades.Update(grenadeSample,grenadeSettings);
@@ -14148,11 +14153,25 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                 if(grenade.grabbed) g_grenadeGrabs.fetch_add(1,std::memory_order_relaxed);
                 if(grenade.switched) g_grenadeSwitches.fetch_add(1,std::memory_order_relaxed);
                 if(grenade.thrown) g_grenadeThrows.fetch_add(1,std::memory_order_relaxed);
+                if(grenade.thrown&&grenade.aimActive) g_grenadeFreeThrows.fetch_add(1,std::memory_order_relaxed);
+                const auto& d=grenade.aimDirection;
+                const float horizontal=std::sqrt(d.x*d.x+d.z*d.z);
+                if(grenade.aimActive&&g_config.weapon_grenade_free_throw&&weapon_interaction::Finite(d)&&
+                    (horizontal>1e-4f||std::fabs(d.y)>1e-4f))
+                {
+                    const float yaw=std::atan2(-d.x,-d.z),pitch=std::atan2(d.y,horizontal);
+                    uint32_t yawBits=0,pitchBits=0;
+                    std::memcpy(&yawBits,&yaw,sizeof(yaw));std::memcpy(&pitchBits,&pitch,sizeof(pitch));
+                    g_grenadeAimAngles.store(uint64_t(yawBits)|(uint64_t(pitchBits)<<32),std::memory_order_relaxed);
+                    g_grenadeAimSpace.store(sample.space,std::memory_order_relaxed);
+                    g_grenadeAimUntilMs.store(inputNow+100,std::memory_order_release);
+                }
+                else g_grenadeAimUntilMs.store(0,std::memory_order_release);
                 if(grenade.putBack) g_grenadePutBacks.fetch_add(1,std::memory_order_relaxed);
                 g_grenadeAccessory=grenade_gesture::BuildPresentation(grenadeSample,grenadeSettings,grenade,
                     sample.weaponGraph);
             }
-            else g_grenadeAccessory={};
+            else { g_grenadeAccessory={};g_grenadeAimUntilMs.store(0,std::memory_order_release); }
             g_grenadeBlockers.store(grenadeBlockers,std::memory_order_relaxed);
             if(realistic)
             {
@@ -14207,6 +14226,7 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
             g_weaponGestureReadyMs.store(0,std::memory_order_release);
             g_stepReloadBlockers.store(gesture_block::Off,std::memory_order_relaxed);
             g_grenadeBlockers.store(gesture_block::Off,std::memory_order_relaxed);
+            g_grenadeAimUntilMs.store(0,std::memory_order_release);
         }
         g_scopeZoomStickY.store(pad.valid?pad.turnY:0.0f,
                                 std::memory_order_release);
@@ -22323,6 +22343,23 @@ uint64_t VR_TakeAuthoredReticleFramingReasserts()
         0, std::memory_order_relaxed);
 }
 
+bool VR_GetGrenadeThrowAim(float outDirection[3]) noexcept
+{
+    const uint64_t until=g_grenadeAimUntilMs.load(std::memory_order_acquire);
+    const uint64_t now=GetTickCount64();
+    if(!until||now>until||!g_config.weapon_grenades||!g_config.weapon_grenade_free_throw) return false;
+    if(g_grenadeAimSpace.load(std::memory_order_relaxed)!=g_contactSpaceEpoch.load(std::memory_order_acquire))
+        return false;
+    const uint64_t packed=g_grenadeAimAngles.load(std::memory_order_relaxed);
+    const uint32_t yawBits=uint32_t(packed),pitchBits=uint32_t(packed>>32);
+    float yaw=0,pitch=0;
+    std::memcpy(&yaw,&yawBits,sizeof(yaw));std::memcpy(&pitch,&pitchBits,sizeof(pitch));
+    if(!std::isfinite(yaw)||!std::isfinite(pitch)) return false;
+    const float c=std::cos(pitch);
+    outDirection[0]=-std::sin(yaw)*c;outDirection[1]=std::sin(pitch);outDirection[2]=-std::cos(yaw)*c;
+    return true;
+}
+
 bool VR_GetHeadPose(float outQuat[4], float outPos[3])
 {
     if (!g_headCsInit)
@@ -22560,14 +22597,15 @@ void VR_ReportWeaponInteractions(uint64_t nowMs)
             gesture_block::Describe(grenadeBlockers,blocked,sizeof(blocked));
             LOG("Chest grenades: enabled=%u title=%s throwTransport=0x%05X switchTransport=0x%05X grabs=%u "
                 "switches=%u throws=%u putBack=%u throwSpeed=%.2f zone=%.2f chestDown=%.2f chestSide=%.2f "
-                "blockedBy=[%s] (requests only; Halo decides count, type and trajectory)",
+                "freeThrow=%u aimSteeredThrows=%u blockedBy=[%s] (requests only; Halo decides count, type and speed)",
                 grenades?1u:0u,index>=0?weapon_interaction::kTitleNames[index]:"none",
                 GrenadeGestureBinding(title,vr_mapping::Grenade,nowMs),
                 GrenadeGestureBinding(title,vr_mapping::SwitchGrenade,nowMs),grenadeGrabs,
                 g_grenadeSwitches.load(std::memory_order_relaxed),throws,
                 g_grenadePutBacks.load(std::memory_order_relaxed),g_config.weapon_grenade_throw_speed_mps,
                 g_config.weapon_grenade_zone_radius_m,g_config.weapon_grenade_chest_down_m,
-                g_config.weapon_grenade_chest_side_m,blocked);
+                g_config.weapon_grenade_chest_side_m,g_config.weapon_grenade_free_throw?1u:0u,
+                g_grenadeFreeThrows.load(std::memory_order_relaxed),blocked);
         }
         previousGrenades=grenades;previousGrenadeGrabs=grenadeGrabs;previousThrows=throws;
         previousGrenadeBlockers=grenadeBlockers;

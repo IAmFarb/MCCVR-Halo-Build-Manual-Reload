@@ -10,8 +10,10 @@
 // Halo's Throw Grenade; let go slowly to put it back.
 //
 // Controller-input layer only: Halo still owns grenade counts, the selected
-// type, the throw animation and the trajectory (which follows the game's aim,
-// not the arm). Nothing native is read or written.
+// type, the throw animation and the throw speed. With free throw on, the
+// throw direction is published so the aim steering can point Halo's own aim
+// along the arm while the grenade leaves the hand; the native press waits a
+// short lead for that aim to turn. Nothing native is read or written here.
 namespace grenade_gesture
 {
 using weapon_interaction::Vec;
@@ -32,8 +34,12 @@ struct Settings
     float chestDown{0.32f};   // chest centre below the head
     float chestSide{0.10f};   // toward the weapon hand: the right chest unless left-handed
     float throwSpeed{1.5f};   // m/s at release to count as a throw
+    bool freeThrow{true};     // aim Halo's throw along the arm's throw
     uint32_t throwButton{}, switchButton{};
 };
+// Free throw timing: aim turns this long before the native press, and stays on
+// the throw this long after it, covering Halo's throw animation to release.
+inline constexpr uint64_t kThrowAimLeadMs=150, kThrowAimHoldMs=800;
 
 struct Sample
 {
@@ -59,6 +65,8 @@ struct Output
     uint32_t buttons{};
     uint64_t pulseUntil{};
     Vec releaseVelocity{};
+    bool aimActive{};   // free throw: steer Halo's aim along aimDirection now
+    Vec aimDirection{}; // unit vector, tracking space
 };
 
 // Horizontal body forward from the head, robust to looking straight down.
@@ -121,7 +129,7 @@ public:
         {
             if(holding_!=Hand::None) out.cancelled=true;
             holding_=Hand::None;pending_=0;throwPending_=false;pulse_=0;pulseUntil_=0;
-            armedP_=armedS_=false;history_=0;
+            armedP_=armedS_=false;history_=0;aiming_=false;aimUntil_=0;
         }
         title_=s.title;generation_=s.generation;space_=s.space;left_=c.leftHanded;enabled_=c.enabled;
         throwButton_=c.throwButton;switchButton_=c.switchButton;last_=s.now;
@@ -162,6 +170,12 @@ public:
                     {
                         throwPending_=true;out.thrown=true;
                         (primary?out.primaryHaptic:out.supportHaptic)=0.50f;
+                        if(c.freeThrow)
+                        {
+                            // Aim first, then press: Halo throws along its aim.
+                            throwDirection_=v*(1/speed);aiming_=true;aimUntil_=0;
+                            nextPulse_=(std::max)(nextPulse_,s.now+kThrowAimLeadMs);
+                        }
                     }
                     else out.putBack=true;
                     holding_=Hand::None;history_=0;
@@ -193,9 +207,17 @@ public:
         if(!pulse_&&s.now>=nextPulse_)
         {
             if(pending_&&c.switchButton) { --pending_;Pulse(c.switchButton,s.now); }
-            else if(throwPending_) { throwPending_=false;Pulse(c.throwButton,s.now); }
+            else if(throwPending_)
+            {
+                throwPending_=false;Pulse(c.throwButton,s.now);
+                if(aiming_) aimUntil_=s.now+kThrowAimHoldMs;
+            }
         }
         if(pulse_) { out.buttons=pulse_;out.pulseUntil=pulseUntil_; }
+        // Steer from release through Halo's throw animation; a later throw
+        // replaces the direction, and switching free throw off ends it.
+        if(aiming_&&(!c.freeThrow||(!throwPending_&&aimUntil_&&s.now>=aimUntil_))) { aiming_=false;aimUntil_=0; }
+        if(aiming_&&Finite(throwDirection_)) { out.aimActive=true;out.aimDirection=throwDirection_; }
         // A grip already squeezed before reaching the chest is not a grab.
         if(heldP) armedP_=false;
         if(heldS) armedS_=false;
@@ -242,7 +264,9 @@ private:
     Hand holding_{Hand::None};
     GameTitle title_{GameTitle::None};
     uint32_t generation_{},throwButton_{},switchButton_{},pulse_{};
-    uint64_t space_{},last_{},pulseUntil_{},nextPulse_{};
+    uint64_t space_{},last_{},pulseUntil_{},nextPulse_{},aimUntil_{};
+    Vec throwDirection_{};
+    bool aiming_{};
     bool left_{},enabled_{},armedP_{},armedS_{},ownedP_{},ownedS_{},throwPending_{};
     bool prevFirst_{},prevSecond_{},drainA_{},drainB_{},drainX_{},drainY_{};
 };

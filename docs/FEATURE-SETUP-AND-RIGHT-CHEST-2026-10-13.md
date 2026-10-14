@@ -51,3 +51,30 @@ Halo 4 (or any title), Steam or Store:
 3. Look down: a small green grenade sits on the right side of the chest.
    Grab it (either hand), switch type with A/B or X/Y, throw it.
 4. Send `HaloMCCVR.log`; the `blockedBy=` field explains any refusal.
+
+## Follow-up: free throw (same day)
+
+Player request: after taking the grenade, throw it wherever the arm throws,
+not where the gun points; X/Y switch type in the left hand, A/B in the right
+(already implemented: each fresh press on the holding controller is one native
+Switch Grenade press, so Halo cycles only through types the player carries).
+
+- `grenade_gesture::State` records the unit release velocity of a throw as
+  `aimDirection` and reports `aimActive` from release until
+  `kThrowAimHoldMs` (800 ms) after the native throw press, which now waits
+  `kThrowAimLeadMs` (150 ms) after release so the aim can turn first. Pause,
+  dual wield, tracking gaps or switching it off end both the throw and the aim.
+- vr.cpp publishes the direction (yaw/pitch bits, space epoch, renewed every
+  input frame, expiring 100 ms after the last renewal);
+  `VR_GetGrenadeThrowAim` is lock-free and allocation-free.
+- `Game_ComputeAimStick` (the shared closed-loop aim for Halo 3, ODST, Reach
+  and Halo 4) substitutes that direction, from the head, for the hand ray
+  while it is active. It emits the same right-stick deflection the loop
+  always does; no hook, signature, native read or write is added. The visible
+  gun and reticle keep following the hand.
+- Config `weapon_grenade_free_throw` (default on), F1 "Free throw".
+  Halo still decides throw speed and grenade physics. Titles without the
+  closed loop (Halo 2 on foot, possibly CE) keep the gun's aim.
+
+Grenade suite: 69 checks, 0 failures. game.cpp, vr.cpp, menu.cpp, config.cpp
+pass the llvm-mingw Windows-header syntax check.

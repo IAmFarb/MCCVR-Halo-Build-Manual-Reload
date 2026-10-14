@@ -46917,6 +46917,18 @@ bool Game_ComputeAimStick(float& outRx, float& outRy)
     const float localDir[3] = {0.0f, 0.0f, -1.0f};
     float f3[3];
     RotateByQuat(q, localDir, f3);
+    // Chest grenade free throw: while a thrown grenade leaves the hand, steer
+    // Halo's own aim along the arm's throw, from the head where Halo spawns
+    // the grenade. Input-only and time-limited; the gun aim returns after.
+    float throwAim[3];
+    if (VR_GetGrenadeThrowAim(throwAim))
+    {
+        for (int axis = 0; axis < 3; ++axis)
+        {
+            f3[axis] = throwAim[axis];
+            p[axis] = hp[axis];
+        }
+    }
 
     // Halo spawns first-person projectiles at the ENGINE's camera â€” on foot,
     // the head â€” and no steering can move that origin. Aiming the bullet ray
