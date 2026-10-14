@@ -1,0 +1,112 @@
+# Builds, tests and packages the mod on a GitHub-hosted Windows machine, using
+# the project's own packaging script (no -Install: nothing touches a game).
+# Download the result from the run's "Artifacts" section. If a run fails, its
+# console output is published to the `ci-logs` branch for diagnosis.
+name: Build mod
+
+on:
+  push:
+    branches: [step-by-step-reload, control-0.7.0]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: windows-2022
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The packaging script checks ancestry against an accepted commit.
+          fetch-depth: 0
+          lfs: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The release preset points FetchContent at pre-populated source folders
+      # under the ignored out/deps. Populate them at the exact pinned commits
+      # from CMakeLists.txt, as a developer machine already has them.
+      - name: Fetch pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          fetch() {
+            local dir="out/deps/$1"
+            mkdir -p "$dir"
+            git -C "$dir" init -q
+            git -C "$dir" remote add origin "$2"
+            git -C "$dir" fetch -q --depth 1 origin "$3"
+            git -C "$dir" checkout -q FETCH_HEAD
+            echo "$1 -> $(git -C "$dir" rev-parse HEAD)"
+          }
+          fetch openxr-src https://github.com/KhronosGroup/OpenXR-SDK.git 5267613edf3d937e3d77556a106a65c2f82b25c6
+          fetch minhook-src https://github.com/TsudaKageyu/minhook.git c3fcafdc10146beb5919319d0683e44e3c30d537
+          fetch imgui-src https://github.com/ocornut/imgui.git 8936b58fe26e8c3da834b8f60b06511d537b4c63
+
+      - name: Build, test and package
+        shell: powershell
+        run: |
+          # Native stderr must not abort this wrapper (PowerShell 5.1); the
+          # packaging script's own exit code decides success.
+          $ErrorActionPreference = 'Continue'
+          # Log outside the repository: the script refuses a dirty worktree.
+          $log = Join-Path $env:RUNNER_TEMP 'build-output.txt'
+          powershell -NoProfile -ExecutionPolicy Bypass -File tools/package-candidate.ps1 *>&1 |
+            Tee-Object -FilePath $log
+          exit $LASTEXITCODE
+
+      # Hand the finished mod back through git so it can be delivered directly,
+      # without the player visiting GitHub. One force-pushed branch per source branch.
+      - name: Publish mod packages to the builds branch
+        if: success()
+        shell: powershell
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $dir = Join-Path $env:RUNNER_TEMP 'builds'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Get-ChildItem out/candidates -File | Where-Object { $_.Name -match 'Manual-ModFiles\.zip$|SHA256\.txt$' } |
+            Copy-Item -Destination $dir
+          "${{ github.sha }} ${{ github.ref_name }}" | Set-Content (Join-Path $dir 'source.txt')
+          Set-Location $dir
+          git init -q
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "Build of ${{ github.sha }}"
+          git push -q --force "https://x-access-token:$env:TOKEN@github.com/${{ github.repository }}.git" "HEAD:refs/heads/builds-${{ github.ref_name }}"
+
+      - name: Upload mod packages
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Halo-MCC-VR-step-reload-and-grenades
+          path: |
+            out/candidates/*.zip
+            out/candidates/*SHA256.txt
+          if-no-files-found: error
+
+      - name: Publish console output to the ci-logs branch
+        if: always()
+        shell: powershell
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $dir = Join-Path $env:RUNNER_TEMP 'ci-logs'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $src = Join-Path $env:RUNNER_TEMP 'build-output.txt'
+          if (Test-Path $src) { Copy-Item $src (Join-Path $dir 'build-output.txt') }
+          Get-ChildItem -Path out/build/release/CMakeFiles -Filter *.log -ErrorAction SilentlyContinue |
+            Copy-Item -Destination $dir
+          $lastTest = 'out/build/release/Testing/Temporary/LastTest.log'
+          if (Test-Path $lastTest) { Copy-Item $lastTest $dir }
+          "${{ github.sha }} ${{ job.status }}" | Set-Content (Join-Path $dir 'run.txt')
+          Set-Location $dir
+          git init -q
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "CI log for ${{ github.sha }}"
+          git push -q --force "https://x-access-token:$env:TOKEN@github.com/${{ github.repository }}.git" HEAD:refs/heads/ci-logs
