@@ -105,9 +105,9 @@ template<unsigned I> uint8_t __fastcall AutoHook(uint32_t weapon,int16_t magazin
     uint8_t result=0;
     __try {
         const bool suppress=Current(I,1) && caller==r.base+kBindings[I].autoReturn && Owned(I,weapon);
-        if (suppress) r.suppressed.fetch_add(1,std::memory_order_relaxed);
-        else if (Game_ReloadPolicyWeapon(kBindings[I].title,weapon))
+        if (!suppress && Game_ReloadPolicyWeapon(kBindings[I].title,weapon))
             Trace(I,TraceAuto,uint32_t(uint16_t(magazine))|(caller==r.base+kBindings[I].autoReturn?0x10000u:0u),continuation);
+        if (suppress) r.suppressed.fetch_add(1,std::memory_order_relaxed);
         else if constexpr(I==native_reload::CE) {
             TailCapture capture{I,weapon,magazine};
             auto* previous=tailScope;

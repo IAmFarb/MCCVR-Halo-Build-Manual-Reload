@@ -233,6 +233,17 @@ int main(int argc,char** argv)
     {
         // Scene lighting: the same part drawn over a dark and a bright picture
         // takes the brightness of what is around it; both eyes reuse one sample.
+        // The sampled region is 256 px, so this uses an eye-sized target.
+        constexpr unsigned size=512;
+        D3D11_TEXTURE2D_DESC sceneDesc{};sceneDesc.Width=sceneDesc.Height=size;sceneDesc.ArraySize=sceneDesc.MipLevels=1;
+        sceneDesc.Format=DXGI_FORMAT_R8G8B8A8_UNORM;sceneDesc.SampleDesc.Count=1;sceneDesc.BindFlags=D3D11_BIND_RENDER_TARGET;
+        ComPtr<ID3D11Texture2D> texture,readback;ComPtr<ID3D11RenderTargetView> target;
+        Check(SUCCEEDED(device->CreateTexture2D(&sceneDesc,nullptr,&texture))&&
+            SUCCEEDED(device->CreateRenderTargetView(texture.Get(),nullptr,&target)),"eye-sized scene target");
+        sceneDesc.BindFlags=0;sceneDesc.Usage=D3D11_USAGE_STAGING;sceneDesc.CPUAccessFlags=D3D11_CPU_ACCESS_READ;
+        Check(SUCCEEDED(device->CreateTexture2D(&sceneDesc,nullptr,&readback)),"eye-sized readback");
+        if(failures) return 1;
+        const D3D11_VIEWPORT viewport{0,0,size,size,0,1};
         const auto& model=weapon_model::kGenericReloadModel;
         weapon_accessory::Presentation p{};p.model=&model;p.pose.position={0,0,-.30f};
         p.pose.orientation={.15f,.25f,0,std::sqrt(1-.15f*.15f-.25f*.25f)};
