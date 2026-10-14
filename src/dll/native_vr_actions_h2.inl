@@ -40,7 +40,7 @@ struct ThreadState {
 } thread_local local;
 bool Current() noexcept {
     return runtime.admitted.load(std::memory_order_acquire) && !runtime.faulted.load(std::memory_order_relaxed) &&
-        g_config.vr_action_mapping && TitleAdapter_GetActiveTitle()==title &&
+        BridgeAllowed(title) && TitleAdapter_GetActiveTitle()==title &&
         TitleAdapter_GetGeneration(title)==runtime.generation;
 }
 __declspec(noinline) bool ReadElapsed(unsigned& value) noexcept {
@@ -162,9 +162,9 @@ void Poll() {
         if(!Retire()) return;
         LOG("Native VR action bridge H2: retired faulted optional hooks; transport routing retained");
     }
-    if(runtime.module && (active!=title || generation!=runtime.generation))
+    if(runtime.module && (active!=title || generation!=runtime.generation || !BridgeAllowed(title)))
         if(!Retire()) return;
-    if(active!=title || !generation || generation==blockedGeneration || !g_config.vr_action_mapping) return;
+    if(active!=title || !generation || generation==blockedGeneration || !BridgeAllowed(title)) return;
     if(!runtime.attempted) {
         // The preexisting read-only transport resolver must verify the reader
         // before MinHook changes its prologue. Retain that cache so optional

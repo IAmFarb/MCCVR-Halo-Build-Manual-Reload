@@ -466,6 +466,10 @@ struct Config
     // Match each campaign's MCC layout; same title order as gesture buttons.
     int flashlight_button[6]{15,15,15,15,15,15}; // legacy migration / unverified-title fallback
     vr_mapping::Overrides vr_bindings[6]{};
+    // Direct native action bridge (Alpha 0.7.0) per game: H3, ODST, Reach, H4,
+    // CE, H2. Off keeps automatic layout-aware routing through the controller
+    // transport. Reach/H4 default off: their bridges crashed at level start.
+    bool vr_native_action_bridge[6]{true,true,false,false,true,true};
     bool vr_action_mapping = true;
     bool flashlight_suppress_on_two_hand = true;
     // Optional temporal upscaler; ordinary eye resolve remains the default.

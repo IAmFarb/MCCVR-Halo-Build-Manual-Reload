@@ -5,6 +5,7 @@
 #include "hook_quiescence.h"
 #include "../common/native_action_button.h"
 #include "../common/config.h"
+#include "../common/weapon_interaction_logic.h"
 #include "../common/log.h"
 #include "../common/minhook_lifecycle.h"
 #include <windows.h>
@@ -13,6 +14,14 @@
 #include <atomic>
 
 namespace {
+// Per-game opt-in for the direct native action bridge (0.7.0). With it off the
+// title keeps automatic layout-aware transport routing, as before 0.7.0.
+// Reach and Halo 4 default off: both crashed in game code shortly after the
+// bridge hooks installed at level start (player logs 2026-10-13).
+bool BridgeAllowed(GameTitle bridgeTitle) noexcept {
+    const int index=weapon_interaction::TitleIndex(bridgeTitle);
+    return g_config.vr_action_mapping && index>=0 && g_config.vr_native_action_bridge[index];
+}
 #include "gesture_binding_reader.inl"
 // Reach is admitted independently: its kit has distinct generic-use and
 // reload consumers (3 and 0x3e). Other titles must prove their own consumer
@@ -69,7 +78,7 @@ struct ThreadState {
 } thread_local local;
 bool Current() noexcept {
     return runtime.admitted.load(std::memory_order_acquire) &&
-        !runtime.faulted.load(std::memory_order_relaxed) && g_config.vr_action_mapping &&
+        !runtime.faulted.load(std::memory_order_relaxed) && BridgeAllowed(title) &&
         TitleAdapter_GetActiveTitle()==title &&
         TitleAdapter_GetGeneration(title)==runtime.generation;
 }
@@ -293,9 +302,9 @@ void NativeVrActions_Poll() {
         if(!Retire()) return;
         LOG("Native VR action bridge Reach: retired faulted optional hooks; transport routing retained");
     }
-    if(runtime.module && (active!=title || generation!=runtime.generation))
+    if(runtime.module && (active!=title || generation!=runtime.generation || !BridgeAllowed(title)))
         if(!Retire()) return;
-    if(active!=title || !generation || generation==blockedGeneration || !g_config.vr_action_mapping) return;
+    if(active!=title || !generation || generation==blockedGeneration || !BridgeAllowed(title)) return;
     if(!runtime.attempted) {
         // The preexisting read-only transport resolver must verify the reader
         // before MinHook changes its prologue. Retain that cache so optional

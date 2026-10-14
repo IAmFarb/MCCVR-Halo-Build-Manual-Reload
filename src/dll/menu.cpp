@@ -854,6 +854,13 @@ namespace
             ImGui::Text("Detected right: %s",VR_ControllerProfileName(false));
             ImGui::Combo("Settings for",&selectedTitle,weapon_interaction::kTitleNames,6);
             changed|=ImGui::Checkbox("Automatic VR action routing",&g_config.vr_action_mapping);
+            if(g_config.vr_action_mapping)
+            {
+                changed|=ImGui::Checkbox("Direct action bridge for this game (experimental)",
+                    &g_config.vr_native_action_bridge[selectedTitle]);
+                ImGui::TextDisabled("Off still follows the game's own button layout. Reach and Halo 4\n"
+                    "default off: their direct bridge crashed when a mission started.");
+            }
             ImGui::TextWrapped("Automatic uses common VR defaults. Changes apply only to the selected game. "
                 "Unbound removes this action's VR button. Physical gestures remain separate.");
             ImGui::TextWrapped("All six games support separate actions while direct VR routing is available. "

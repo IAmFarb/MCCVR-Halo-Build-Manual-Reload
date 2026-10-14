@@ -37,7 +37,7 @@ struct Local {
 } thread_local local;
 bool Current() noexcept {
     return runtime.admitted.load(std::memory_order_acquire) &&
-        !runtime.faulted.load(std::memory_order_relaxed) && g_config.vr_action_mapping &&
+        !runtime.faulted.load(std::memory_order_relaxed) && BridgeAllowed(title) &&
         TitleAdapter_GetActiveTitle()==title &&
         TitleAdapter_GetGeneration(title)==runtime.generation.load(std::memory_order_acquire);
 }
@@ -197,9 +197,9 @@ void Poll() {
         if(!Retire())return;
         LOG("Native VR action bridge CE: retired faulted optional hooks; transport routing retained");
     }
-    if(runtime.module&&(active!=title||generation!=runtime.generation.load(std::memory_order_acquire)))
+    if(runtime.module&&(active!=title||generation!=runtime.generation.load(std::memory_order_acquire)||!BridgeAllowed(title)))
         if(!Retire())return;
-    if(active!=title||!generation||generation==blockedGeneration||!g_config.vr_action_mapping)return;
+    if(active!=title||!generation||generation==blockedGeneration||!BridgeAllowed(title))return;
     if(!runtime.module) {
         vr_mapping::Transports fallback{};
         if(!Game_ReadVrActionBindings(fallback,GetTickCount64()))return;

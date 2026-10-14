@@ -478,6 +478,21 @@ static void TestH2(){
     NativeVrActions_Poll();testTitle=GameTitle::None;
 }
 int main(){
+    {
+        const Config defaults{};
+        Check(defaults.vr_native_action_bridge[0]&&defaults.vr_native_action_bridge[1]&&
+            !defaults.vr_native_action_bridge[2]&&!defaults.vr_native_action_bridge[3]&&
+            defaults.vr_native_action_bridge[4]&&defaults.vr_native_action_bridge[5],
+            "Reach and Halo 4 direct bridges default off; others keep 0.7.0 behaviour");
+        g_config.vr_action_mapping=true;
+        for(auto& allowed:g_config.vr_native_action_bridge) allowed=false;
+        fallbackVerified=true;NativeVrActions_Poll();
+        Check(creates==0&&!runtime.module&&!NativeVrActions_CanRoute(testTitle,clockNow),
+            "a disabled bridge never patches the game and leaves transport routing");
+        fallbackVerified=false;
+        // The remaining checks exercise the bridge mechanics themselves.
+        for(auto& allowed:g_config.vr_native_action_bridge) allowed=true;
+    }
     g_config.vr_action_mapping=true;NativeVrActions_Poll();
     Check(creates==0&&!runtime.module,"transport reader must be verified before optional reader prologue is patched");
     fallbackVerified=true;Install();

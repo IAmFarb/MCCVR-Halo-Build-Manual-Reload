@@ -1153,7 +1153,10 @@ void ConfigLoad(const wchar_t* path)
         bool weaponButtonKey = false;
         for (unsigned i=0;i<weapon_interaction::kTitleCount;++i)
         {
-            char reloadKey[64]{},switchKey[64]{},flashlightKey[64]{},grenadeKey[64]{},grenadeSwitchKey[64]{};
+            char reloadKey[64]{},switchKey[64]{},flashlightKey[64]{},grenadeKey[64]{},grenadeSwitchKey[64]{},bridgeKey[64]{};
+            sprintf_s(bridgeKey,"vr_native_action_bridge_%s",weapon_interaction::kTitleKeys[i]);
+            if(!strcmp(key,bridgeKey))
+            { g_config.vr_native_action_bridge[i]=atoi(val)!=0;weaponButtonKey=true;break; }
             sprintf_s(reloadKey,"weapon_reload_button_%s",weapon_interaction::kTitleKeys[i]);
             sprintf_s(switchKey,"weapon_switch_button_%s",weapon_interaction::kTitleKeys[i]);
             sprintf_s(flashlightKey,"flashlight_button_%s",weapon_interaction::kTitleKeys[i]);
@@ -2525,6 +2528,7 @@ void ConfigSave()
         fprintf(f,"weapon_switch_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_switch_button[i]);
         fprintf(f,"weapon_grenade_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_grenade_button[i]);
         fprintf(f,"weapon_grenade_switch_button_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.weapon_grenade_switch_button[i]);
+        fprintf(f,"vr_native_action_bridge_%s = %d\n",weapon_interaction::kTitleKeys[i],g_config.vr_native_action_bridge[i]?1:0);
     }
     fprintf(f,"\n# VR action bindings: 0=automatic, 1=unbound. Edited in VR Mappings.\n");
     fprintf(f,"physical_crouch = %d\nphysical_crouch_depth_m = %.3f\n",
