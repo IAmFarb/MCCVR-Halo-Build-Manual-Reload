@@ -1190,6 +1190,7 @@ void ConfigLoad(const wchar_t* path)
         if (!strcmp(key,"manual_reload_finish_step")) { g_config.manual_reload_finish_step=atoi(val)!=0;continue; }
         if (!strcmp(key,"manual_reload_block_fire")) { g_config.manual_reload_block_fire=atoi(val)!=0;continue; }
         if (!strcmp(key,"weapon_grenades")) { g_config.weapon_grenades=atoi(val)!=0;continue; }
+        if (!strcmp(key,"weapon_accessory_scene_lighting")) { g_config.weapon_accessory_scene_lighting=atoi(val)!=0;continue; }
         if (!strcmp(key,"weapon_grenade_free_throw")) { g_config.weapon_grenade_free_throw=atoi(val)!=0;continue; }
         if (!strcmp(key,"fork_feature_setup")) { g_config.fork_feature_setup=(std::max)(0,atoi(val));continue; }
         {
@@ -2521,6 +2522,8 @@ void ConfigSave()
     fprintf(f, "weapon_grenade_throw_speed_mps = %.2f\n",g_config.weapon_grenade_throw_speed_mps);
     fprintf(f, "# Grenade sideways from chest centre toward the weapon hand (right chest when right-handed).\n");
     fprintf(f, "weapon_grenade_chest_side_m = %.3f\n",g_config.weapon_grenade_chest_side_m);
+    fprintf(f, "# Magazines and grenades match the brightness of the scene around them.\n");
+    fprintf(f, "weapon_accessory_scene_lighting = %d\n",g_config.weapon_accessory_scene_lighting?1:0);
     fprintf(f, "# Free throw: the grenade goes the way your arm throws it, not where the gun points.\n");
     fprintf(f, "weapon_grenade_free_throw = %d\n",g_config.weapon_grenade_free_throw?1:0);
     fprintf(f, "# Reload/grenade first-run setup already applied (do not edit).\n");

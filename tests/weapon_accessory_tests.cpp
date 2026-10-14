@@ -230,6 +230,50 @@ int main(int argc,char** argv)
         p.pose.position.x=std::numeric_limits<float>::quiet_NaN();
         Check(!weapon_accessory::Projection(p,{},-.5f,.5f,-.5f,.5f,invalid),"nonfinite accessory pose rejected");
     }
+    {
+        // Scene lighting: the same part drawn over a dark and a bright picture
+        // takes the brightness of what is around it; both eyes reuse one sample.
+        const auto& model=weapon_model::kGenericReloadModel;
+        weapon_accessory::Presentation p{};p.model=&model;p.pose.position={0,0,-.30f};
+        p.pose.orientation={.15f,.25f,0,std::sqrt(1-.15f*.15f-.25f*.25f)};
+        weapon_accessory::Constants constants{};
+        Check(weapon_accessory::Projection(p,{},-.55f,.55f,-.55f,.55f,constants),"scene-lit projection");
+        double brightness[2]{};
+        const float backgrounds[2]{.04f,.70f};
+        for(int pass=0;pass<2;++pass)
+        {
+            const float clear[]{backgrounds[pass],backgrounds[pass],backgrounds[pass],1};
+            context->ClearRenderTargetView(target.Get(),clear);
+            const weapon_accessory::Presentation* items[]{&p};
+            ComPtr<ID3D11CommandList> staged;
+            Check(SUCCEEDED(renderer.DrawMany(device.Get(),context.Get(),target.Get(),size,size,viewport,items,&constants,1,
+                &staged,{true,true}))&&staged,"scene-lit accessory records its sample and draw");
+            context->ExecuteCommandList(staged.Get(),TRUE);
+            ComPtr<ID3D11ShaderResourceView> afterScene;context->PSGetShaderResources(1,1,&afterScene);
+            Check(!afterScene,"scene sample binding is not left on the native context");
+            context->CopyResource(readback.Get(),texture.Get());
+            D3D11_MAPPED_SUBRESOURCE mapped{};hr=context->Map(readback.Get(),0,D3D11_MAP_READ,0,&mapped);
+            Check(SUCCEEDED(hr),"map scene-lit image");if(FAILED(hr)) return 1;
+            const int background=int(backgrounds[pass]*255+.5f);
+            unsigned pixels=0;double sum=0;
+            for(unsigned y=0;y<size;++y) for(unsigned x=0;x<size;++x)
+            {
+                const auto* pixel=static_cast<const unsigned char*>(mapped.pData)+y*mapped.RowPitch+x*4;
+                if(std::abs(int(pixel[0])-background)+std::abs(int(pixel[1])-background)+std::abs(int(pixel[2])-background)>6)
+                { ++pixels;sum+=pixel[0]+pixel[1]+pixel[2]; }
+            }
+            context->Unmap(readback.Get(),0);
+            Check(pixels>50,"scene-lit part is visible");
+            brightness[pass]=pixels?sum/pixels:0;
+        }
+        Check(brightness[0]*2.5<brightness[1],"a part in a dark place is drawn much darker than in a bright place");
+        // A second eye that does not sample reuses the first eye's measurement.
+        const float bright[]{.70f,.70f,.70f,1};context->ClearRenderTargetView(target.Get(),bright);
+        const weapon_accessory::Presentation* items[]{&p};
+        ComPtr<ID3D11CommandList> second;
+        Check(SUCCEEDED(renderer.DrawMany(device.Get(),context.Get(),target.Get(),size,size,viewport,items,&constants,1,
+            &second,{true,false}))&&second,"second eye draws from the shared sample");
+    }
     renderer.Reset();
     for(unsigned title=1;title<=6;++title)
         Check(texturedColor[title]>10,"every title samples authored weapon colors instead of a flat neutral material");

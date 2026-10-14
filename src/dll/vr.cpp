@@ -17080,9 +17080,12 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                                             const D3D11_VIEWPORT viewport{static_cast<float>(rect.offset.x),
                                                 static_cast<float>(rect.offset.y),static_cast<float>(rect.extent.width),
                                                 static_cast<float>(rect.extent.height),0,1};
+                                            // Eye 0's commands run first, so it samples the scene
+                                            // for both eyes and they light the item identically.
                                             const HRESULT accessoryResult=g_weaponAccessoryRenderer.DrawMany(
                                                 g_device,g_context,targetRtv,g_stereoW,g_stereoH,viewport,
-                                                accessoryItems,constants,accessoryCount,&accessoryCommands[targetEye]);
+                                                accessoryItems,constants,accessoryCount,&accessoryCommands[targetEye],
+                                                {g_config.weapon_accessory_scene_lighting,targetEye==0});
                                             if(!FAILED(accessoryPairResult)) accessoryPairResult=accessoryResult;
                                         }
                                     }

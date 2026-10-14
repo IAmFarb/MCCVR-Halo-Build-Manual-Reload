@@ -1244,6 +1244,9 @@ namespace
             }
             changed |= vr_menu::SliderFloat("Magazine insertion radius (m)",
                 &g_config.weapon_insert_radius_m,0.06f,0.30f,"%.2f");
+            changed |= ImGui::Checkbox("Magazines match the scene's lighting", &g_config.weapon_accessory_scene_lighting);
+            ImGui::TextDisabled("Hip magazines, held parts and chest grenades take their brightness\n"
+                "and a little colour from the game picture around them.");
             changed |= ImGui::Checkbox("Generic reload item for unknown weapons", &g_config.weapon_unknown_reload_visual);
             ImGui::TextDisabled("Detected unfamiliar weapons use a blue reload item.\n"
                 "Native ammo and reload rules still apply; it is not the mod's own mesh.");

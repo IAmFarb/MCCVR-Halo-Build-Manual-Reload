@@ -78,3 +78,23 @@ Switch Grenade press, so Halo cycles only through types the player carries).
 
 Grenade suite: 69 checks, 0 failures. game.cpp, vr.cpp, menu.cpp, config.cpp
 pass the llvm-mingw Windows-header syntax check.
+
+## Follow-up: scene-matched accessory lighting (same day)
+
+Player report: the hip magazine (Halo 4 `storm_assault_rifle`, the kit-authored
+part) "wasn't lit correctly and didn't match the environmental lighting". The
+accessory pass draws after the game picture with a fixed key light, so it stays
+bright in dark rooms.
+
+`WeaponAccessoryRenderer::DrawMany` gains `SceneLighting{enabled,capture}`.
+With capture (eye 0, whose command list executes first), it copies a 256x256
+region of the finished eye picture centred on each item into a private
+256x256x6 array, generates mips, and the pixel shader reads the 1x1 average:
+display-space luminance / 0.40 sets exposure (0.06..1.3) with a 35 % tint
+toward the local colour; sRGB/float targets are converted both ways. The
+other eye reuses that sample so both eyes match. Unsupported formats, MSAA or
+odd views keep the old fixed lighting; native state is restored by the
+command list as before. Config `weapon_accessory_scene_lighting` (default on),
+F1 "Magazines match the scene's lighting". The renderer suite adds a WARP
+check that the same part over a dark picture renders much darker than over a
+bright one, and that the scene binding does not leak to the native context.

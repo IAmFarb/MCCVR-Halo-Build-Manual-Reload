@@ -895,6 +895,9 @@ struct Config
     bool weapon_holster_click = false;
     bool weapon_needler_shake = false;
     bool weapon_unknown_reload_visual = true;
+    // Hip magazines, held parts and chest grenades take their brightness and
+    // a mild tint from the game picture around them instead of fixed light.
+    bool weapon_accessory_scene_lighting = true;
     float weapon_shake_travel_m = 0.10f;
     int weapon_holster_location = 0; // 0 shoulder, 1 hip
     // X, RB, LB, B, Y, A, LT, RT. H3, ODST, Reach, H4, CE, H2.
