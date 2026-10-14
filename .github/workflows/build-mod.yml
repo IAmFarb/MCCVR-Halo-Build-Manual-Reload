@@ -6,7 +6,7 @@ name: Build mod
 
 on:
   push:
-    branches: [step-by-step-reload]
+    branches: [step-by-step-reload, control-0.7.0]
   workflow_dispatch:
 
 permissions:
@@ -58,6 +58,26 @@ jobs:
           powershell -NoProfile -ExecutionPolicy Bypass -File tools/package-candidate.ps1 *>&1 |
             Tee-Object -FilePath $log
           exit $LASTEXITCODE
+
+      # Hand the finished mod back through git so it can be delivered directly,
+      # without the player visiting GitHub. One force-pushed branch per source branch.
+      - name: Publish mod packages to the builds branch
+        if: success()
+        shell: powershell
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $dir = Join-Path $env:RUNNER_TEMP 'builds'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Get-ChildItem out/candidates -File | Where-Object { $_.Name -match 'Manual-ModFiles\.zip$|SHA256\.txt$' } |
+            Copy-Item -Destination $dir
+          "${{ github.sha }} ${{ github.ref_name }}" | Set-Content (Join-Path $dir 'source.txt')
+          Set-Location $dir
+          git init -q
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "Build of ${{ github.sha }}"
+          git push -q --force "https://x-access-token:$env:TOKEN@github.com/${{ github.repository }}.git" "HEAD:refs/heads/builds-${{ github.ref_name }}"
 
       - name: Upload mod packages
         if: success()
