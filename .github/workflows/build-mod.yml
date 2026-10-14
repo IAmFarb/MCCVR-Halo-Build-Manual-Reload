@@ -27,6 +27,26 @@ jobs:
         with:
           python-version: '3.12'
 
+      # The release preset points FetchContent at pre-populated source folders
+      # under the ignored out/deps. Populate them at the exact pinned commits
+      # from CMakeLists.txt, as a developer machine already has them.
+      - name: Fetch pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          fetch() {
+            local dir="out/deps/$1"
+            mkdir -p "$dir"
+            git -C "$dir" init -q
+            git -C "$dir" remote add origin "$2"
+            git -C "$dir" fetch -q --depth 1 origin "$3"
+            git -C "$dir" checkout -q FETCH_HEAD
+            echo "$1 -> $(git -C "$dir" rev-parse HEAD)"
+          }
+          fetch openxr-src https://github.com/KhronosGroup/OpenXR-SDK.git 5267613edf3d937e3d77556a106a65c2f82b25c6
+          fetch minhook-src https://github.com/TsudaKageyu/minhook.git c3fcafdc10146beb5919319d0683e44e3c30d537
+          fetch imgui-src https://github.com/ocornut/imgui.git 8936b58fe26e8c3da834b8f60b06511d537b4c63
+
       - name: Build, test and package
         shell: powershell
         run: |
