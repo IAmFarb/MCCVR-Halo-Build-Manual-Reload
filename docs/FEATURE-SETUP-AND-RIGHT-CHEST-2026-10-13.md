@@ -98,3 +98,19 @@ command list as before. Config `weapon_accessory_scene_lighting` (default on),
 F1 "Magazines match the scene's lighting". The renderer suite adds a WARP
 check that the same part over a dark picture renders much darker than over a
 bright one, and that the scene binding does not leak to the native context.
+
+## Follow-up: gesture melee on, quiet during reload strokes and throws
+
+Player request: shaking either arm at an enemy should melee. Alpha 0.7.0
+already has "Gesture melee (experimental)" (F1 > Body & Hands): a hand speed
+crossing `physical_melee_swing_speed` (default 5 m/s) presses the game's own
+melee binding through the verified binding reader (Halo 3, ODST, Reach, Halo 4,
+Halo 2 when armed). Setup version 2 switches it on once.
+
+Because a grenade throw or a charging-handle pull is also a fast hand motion,
+vr.cpp now publishes `VR_MeleeGestureQuiet(leftController)`: both controllers
+stay quiet while a step-by-step reload is out of Idle (+400 ms), and the
+grenade's controller while holding (+300 ms) and for 600 ms after a throw or
+put-back. `Game_GestureMeleeInput` latches a quiet hand, so it must settle
+below the threshold before it can strike. Contact ("true physical") melee is
+unchanged and still takes priority when selected.

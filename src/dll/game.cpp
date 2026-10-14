@@ -44399,6 +44399,13 @@ uint32_t Game_GestureMeleeInput(uint64_t nowMs)
                 previous,peak,std::memory_order_relaxed)) {}
         }
         std::atomic<bool>& latch = state.velocityLatched[hand];
+        // A reload stroke or grenade throw in progress is not a melee swing;
+        // the hand must settle below the threshold before it can strike.
+        if (VR_MeleeGestureQuiet(hand == 0))
+        {
+            latch.store(true, std::memory_order_release);
+            continue;
+        }
         const bool wasLatched = latch.load(std::memory_order_acquire);
         const Halo4PhysicalMeleeVelocityDecision decision =
             Halo4UpdatePhysicalMeleeVelocityLatch(

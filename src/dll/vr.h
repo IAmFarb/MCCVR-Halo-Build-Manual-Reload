@@ -734,6 +734,10 @@ bool VR_GetLeftControllerPose(float outQuat[4], float outPos[3]);
 bool VR_GetControllerLinearVelocity(bool left, float outVelocity[3]);
 // Melee-only 60 ms tracked peak; ordinary motion velocity stays instantaneous.
 bool VR_GetPhysicalMeleeSpeed(bool left,float& speed);
+// True while that physical controller is busy with a step-by-step reload part
+// or handle, or a chest grenade (and briefly after a throw), so those fast
+// hand motions are not also read as a gesture melee swing. Lock-free.
+bool VR_MeleeGestureQuiet(bool leftController) noexcept;
 // Called only from Halo's already-validated class-2 CHUD path. The active
 // weapon reticle is redirected into the controller-ray quad texture instead
 // of being drawn at the center of either VR eye.

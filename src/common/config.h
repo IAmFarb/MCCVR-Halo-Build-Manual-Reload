@@ -918,9 +918,10 @@ struct Config
     // Legacy (non-VR-mapping) MCC buttons, same index list as above: LT, LB.
     int weapon_grenade_button[6]{6,6,6,6,6,6};
     int weapon_grenade_switch_button[6]{2,2,2,2,2,2};
-    // This fork's features are what the player installed it for. A config from
-    // before setup version 1 gets them switched on once (see
-    // Config_ApplyFeatureSetup); afterwards the player's own choices stand.
+    // This fork's features are what the player installed it for. Each setup
+    // version switches its features on once (see Config_ApplyFeatureSetup):
+    // 1 = step-by-step reload, no auto reload, chest grenades; 2 = gesture
+    // melee. Afterwards the player's own choices stand.
     int fork_feature_setup = 0;
 
     // Two-handed weapon aiming: with the support hand on the gun front, aim

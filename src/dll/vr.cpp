@@ -9938,6 +9938,8 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
     // the input thread stops renewing it (a stalled input frame expires it).
     std::atomic<uint64_t> g_grenadeAimAngles{0},g_grenadeAimSpace{0},g_grenadeAimUntilMs{0};
     std::atomic<unsigned> g_grenadeFreeThrows{0};
+    // Gesture melee stays quiet for a controller until this time (left, right).
+    std::atomic<uint64_t> g_meleeQuietUntilMs[2]{};
     std::atomic<HRESULT> g_weaponAccessoryResult{S_FALSE};
     std::atomic<unsigned> g_weaponGestureGrabs{0},g_weaponReloadRequests{0},g_weaponSwapRequests{0};
     std::atomic<unsigned> g_authoredInsertionRequests{0},g_fallbackInsertionRequests{0};
@@ -14172,6 +14174,24 @@ float4 ps_scope_linearize(VSOut i):SV_Target { return paint(i.uv,true); }
                     sample.weaponGraph);
             }
             else { g_grenadeAccessory={};g_grenadeAimUntilMs.store(0,std::memory_order_release); }
+            {
+                // Reload strokes and grenade throws are fast hand motions too;
+                // keep them from also firing a gesture melee.
+                static grenade_gesture::Hand lastGrenadeHand=grenade_gesture::Hand::None;
+                const auto quiet=[&](bool leftController,uint64_t until)
+                {
+                    auto& slot=g_meleeQuietUntilMs[leftController?0:1];
+                    if(slot.load(std::memory_order_relaxed)<until) slot.store(until,std::memory_order_release);
+                };
+                if(realistic&&g_realisticReload.CurrentPhase()!=realistic_reload::Phase::Idle)
+                { quiet(true,inputNow+400);quiet(false,inputNow+400); }
+                const auto grenadeHand=grenade.holding!=grenade_gesture::Hand::None?grenade.holding:
+                    (grenade.thrown||grenade.putBack||grenade.cancelled)?lastGrenadeHand:grenade_gesture::Hand::None;
+                if(grenadeHand!=grenade_gesture::Hand::None)
+                    quiet(!grenade_gesture::State::RightController(grenadeHand,leftHanded),
+                        inputNow+(grenade.holding!=grenade_gesture::Hand::None?300:600));
+                lastGrenadeHand=grenade.holding;
+            }
             g_grenadeBlockers.store(grenadeBlockers,std::memory_order_relaxed);
             if(realistic)
             {
@@ -22344,6 +22364,11 @@ uint64_t VR_TakeAuthoredReticleFramingReasserts()
 {
     return g_authoredReticleFramingReasserts.exchange(
         0, std::memory_order_relaxed);
+}
+
+bool VR_MeleeGestureQuiet(bool leftController) noexcept
+{
+    return GetTickCount64()<g_meleeQuietUntilMs[leftController?0:1].load(std::memory_order_acquire);
 }
 
 bool VR_GetGrenadeThrowAim(float outDirection[3]) noexcept

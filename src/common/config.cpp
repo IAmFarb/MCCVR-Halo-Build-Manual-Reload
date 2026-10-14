@@ -1802,16 +1802,27 @@ void ConfigLoadMigrating(const wchar_t* primaryPath, const wchar_t* legacyPath)
 
 void Config_ApplyFeatureSetup()
 {
-    constexpr int kFeatureSetup=1;
-    if (g_config.fork_feature_setup>=kFeatureSetup) return;
-    g_config.manual_reload=true;
-    g_config.manual_reload_realistic=true;
-    g_config.manual_reload_disable_auto=true;
-    g_config.weapon_grenades=true;
+    constexpr int kFeatureSetup=2;
+    const int applied=g_config.fork_feature_setup;
+    if (applied>=kFeatureSetup) return;
+    if (applied<1)
+    {
+        g_config.manual_reload=true;
+        g_config.manual_reload_realistic=true;
+        g_config.manual_reload_disable_auto=true;
+        g_config.weapon_grenades=true;
+        LOG("config: first-run setup switched on Manual Reload, Step-by-step reload, Disable automatic reload "
+            "and Chest grenades (F1 > Reload and holsters can turn them off again)");
+    }
+    if (applied<2)
+    {
+        // Player request: a fast swing of either arm melees. Contact melee,
+        // if the player chose it, keeps priority as before.
+        g_config.gesture_melee=true;
+        LOG("config: setup 2 switched on Gesture melee (F1 > Body & Hands can turn it off again)");
+    }
     g_config.fork_feature_setup=kFeatureSetup;
     ConfigSave();
-    LOG("config: first-run setup switched on Manual Reload, Step-by-step reload, Disable automatic reload "
-        "and Chest grenades (F1 > Reload and holsters can turn them off again)");
 }
 
 void ConfigSave()
